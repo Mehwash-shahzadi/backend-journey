@@ -1,3 +1,4 @@
 # Virtual env - ignore Python venv folder
 venv/
 __pycache__/
+.mypy_cache/
