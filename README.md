@@ -11,7 +11,7 @@ This repo is my public accountability. Days 1-5 are done. Let's see where this g
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-username/backend-journey.git
+git clone https://github.com/Mehwash-Shahzadi/backend-journey.git
 cd backend-journey
 python -m venv venv
 source venv/bin/activate    # Windows: venv\Scripts\activate
