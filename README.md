@@ -103,6 +103,7 @@ class SavingsAccount(BankAccount):
     def apply_interest(self) -> None:
         interest = self.balance * self.interest_rate / 100
         self.deposit(interest)
+        self.transaction_history.add_transaction(Transaction("Interest",interest,self.balance,datetime.now()))
 ```
 
 ```bash
