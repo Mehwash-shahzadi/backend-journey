@@ -203,9 +203,9 @@ cat bank.log
 
 **_Try/Except Blocks:_** Think of it like a safety net - you "try" risky code, and if it fails, you "catch" the error instead of crashing. Like catching a ball before it hits the ground.
 
-**_Custom Exceptions:_**Instead of generic errors, you create specific ones (like `InsufficientFundsError`). It's like having different alarm sounds - you instantly know what went wrong.
+**_Custom Exceptions:_** Instead of generic errors, you create specific ones (like `InsufficientFundsError`). It's like having different alarm sounds - you instantly know what went wrong.
 
-**_Logging:_**Better than print statements because it saves everything to a file with timestamps. You can track what happened even after the program closes - super useful for debugging production issues.
+**_Logging:_** Better than print statements because it saves everything to a file with timestamps. You can track what happened even after the program closes - super useful for debugging production issues.
 
 **Key Takeaways:**
 
