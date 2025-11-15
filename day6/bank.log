@@ -1,0 +1,4 @@
+2025-11-15 14:00:57,372 - ERROR - Ali: Amount must be positive. You entered: -50
+2025-11-15 14:01:44,170 - ERROR - Ali: Insufficient funds. Balance: 100, Withdrawal: 200
+2025-11-15 14:02:12,594 - INFO - Ali: Deposited 150. Balance: 250
+2025-11-15 14:02:12,594 - INFO - Ali: Withdrew 50. Balance: 200
