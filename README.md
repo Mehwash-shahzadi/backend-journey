@@ -6,12 +6,12 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Days 1-6 are done. Let's see where this goes.
+This repo is my public accountability. Week 1 complete (Days 1-7). Let's see where this goes.
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/Mehwash-Shahzadi/backend-journey.git
+git clone https://github.com/your-username/backend-journey.git
 cd backend-journey
 python -m venv venv
 source venv/bin/activate    # Windows: venv\Scripts\activate
@@ -201,11 +201,11 @@ cat bank.log
 
 **What I Learned:**
 
-**_Try/Except Blocks:_** Think of it like a safety net - you "try" risky code, and if it fails, you "catch" the error instead of crashing. Like catching a ball before it hits the ground.
+_Try/Except Blocks:_ Think of it like a safety net - you "try" risky code, and if it fails, you "catch" the error instead of crashing. Like catching a ball before it hits the ground.
 
-**_Custom Exceptions:_** Instead of generic errors, you create specific ones (like `InsufficientFundsError`). It's like having different alarm sounds - you instantly know what went wrong.
+_Custom Exceptions:_ Instead of generic errors, you create specific ones (like `InsufficientFundsError`). It's like having different alarm sounds - you instantly know what went wrong.
 
-**_Logging:_** Better than print statements because it saves everything to a file with timestamps. You can track what happened even after the program closes - super useful for debugging production issues.
+_Logging:_ Better than print statements because it saves everything to a file with timestamps. You can track what happened even after the program closes - super useful for debugging production issues.
 
 **Key Takeaways:**
 
@@ -213,6 +213,68 @@ cat bank.log
 - Custom exceptions make debugging way easier than generic error messages
 - Logging to files means you can track issues even after deployment
 - `try/except` blocks separate normal flow from error handling
+
+---
+
+### Day 7: File Handling & JSON Persistence
+
+**What I Built:** Added the ability to save and load account data using JSON files
+
+Now the banking system can remember everything even after you close it! Implemented save/load functionality so accounts and transactions persist between program runs. Had to learn how to convert Python objects to JSON and back - turns out datetime objects need special handling.
+
+```python
+# Serialization - Converting Python objects to JSON
+@staticmethod
+def save_to_file(accounts: dict, filename="bank_data.json"):
+    try:
+        data_to_save = {}
+        for owner, acc in accounts.items():
+            data_to_save[owner] = {
+                "balance": acc.balance,
+                "transactions": acc.transaction_history.to_list()
+            }
+        with open(filename, "w") as f:
+            json.dump(data_to_save, f, indent=4)
+        logging.info("All accounts saved successfully.")
+    except Exception as e:
+        logging.error(f"Error saving accounts: {str(e)}")
+
+# Deserialization - Converting JSON back to Python objects
+@staticmethod
+def load_from_file(filename="bank_data.json"):
+    accounts = {}
+    try:
+        with open(filename, "r") as f:
+            data_loaded = json.load(f)
+        for owner, info in data_loaded.items():
+            acc = BankAccount(owner, info["balance"])
+            acc.transaction_history = TransactionHistory.from_list(info["transactions"])
+            accounts[owner] = acc
+        logging.info("All accounts loaded successfully.")
+    except FileNotFoundError:
+        logging.warning(f"{filename} not found. Starting fresh.")
+    return accounts
+```
+
+```bash
+python day07/persistent_bank.py
+# Close the program, run again - data is still there!
+```
+
+**What I Learned:**
+
+_Serialization:_ Converting your Python objects (like classes and datetime) into a format that can be saved to a file. Think of it like packing your stuff into boxes before moving - you're converting it into a storable format.
+
+_Deserialization:_ The opposite - reading the saved file and recreating your Python objects from it. Like unpacking boxes and putting everything back where it belongs.
+
+_Context Managers (`with` statement):_ Automatically closes files even if errors occur. Like a door that locks itself when you leave - you don't have to remember to close it manually.
+
+**Key Takeaways:**
+
+- JSON is perfect for saving simple data structures between program runs
+- Always handle `FileNotFoundError` - the file might not exist on first run
+- Context managers (`with open()`) automatically clean up resources
+- Datetime objects need to be converted to strings for JSON compatibility
 
 ---
 
@@ -226,15 +288,14 @@ backend-journey/
 ├── day04/          # Banking with inheritance
 ├── day05/          # Dataclasses & type hints
 ├── day06/          # Exception handling & logging
+├── day07/          # JSON persistence
 └── requirements.txt
 ```
 
 ## What's Next
 
-**Day 7** - JSON persistence for saving account data between sessions
+**Week 2** - Starting Monday with a CLI task manager project
 
-**Week 2 ahead** - CLI task manager, file operations, and working with APIs
-
-The long-term plan: REST APIs, databases, authentication, Docker, and eventually deploying real applications.
+The long-term roadmap: REST APIs, SQL/NoSQL databases, authentication, Docker, and eventually deploying production applications.
 
 ---

@@ -1,0 +1,32 @@
+{
+    "Ali": {
+        "balance": 120,
+        "transactions": [
+            {
+                "amount": 50,
+                "type": "deposit",
+                "timestamp": "2025-11-15T15:58:01.521502"
+            },
+            {
+                "amount": 30,
+                "type": "withdraw",
+                "timestamp": "2025-11-15T15:58:01.521502"
+            }
+        ]
+    },
+    "Mishi": {
+        "balance": 600,
+        "transactions": [
+            {
+                "amount": 200,
+                "type": "deposit",
+                "timestamp": "2025-11-15T15:58:01.521502"
+            },
+            {
+                "amount": 100,
+                "type": "withdraw",
+                "timestamp": "2025-11-15T15:58:01.521502"
+            }
+        ]
+    }
+}
