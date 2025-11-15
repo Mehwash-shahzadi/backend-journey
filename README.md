@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Days 1-5 are done. Let's see where this goes.
+This repo is my public accountability. Days 1-6 are done. Let's see where this goes.
 
 ## Quick Start
 
@@ -103,7 +103,6 @@ class SavingsAccount(BankAccount):
     def apply_interest(self) -> None:
         interest = self.balance * self.interest_rate / 100
         self.deposit(interest)
-        self.transaction_history.add_transaction(Transaction("Interest",interest,self.balance,datetime.now()))
 ```
 
 ```bash
@@ -160,6 +159,63 @@ mypy day05/typed_models.py
 
 ---
 
+### Day 6: Exception Handling & Logging
+
+**What I Built:** Added proper error handling and logging to the banking system
+
+Replaced all those print statements with a proper logging system. Created custom exceptions for specific error cases like insufficient funds and negative amounts. Now when something goes wrong, I know exactly what happened and when - everything gets logged to `bank.log`.
+
+```python
+# Custom Exceptions
+class NegativeAmountError(Exception):
+    """Raised when the amount is zero or negative."""
+    def __init__(self, amount):
+        super().__init__(f"Amount must be positive. You entered: {amount}")
+
+class InsufficientFundsError(Exception):
+    """Raised when withdrawal exceeds account balance."""
+    def __init__(self, balance, amount):
+        super().__init__(f"Insufficient funds. Balance: {balance}, Withdrawal: {amount}")
+
+# Using them in BankAccount
+def withdraw(self, amount: float):
+    try:
+        if amount <= 0:
+            raise NegativeAmountError(amount)
+        if amount > self.balance:
+            raise InsufficientFundsError(self.balance, amount)
+
+        self.balance -= amount
+        logging.info(f"{self.owner}: Withdrew {amount}. Balance: {self.balance}")
+
+    except (NegativeAmountError, InsufficientFundsError) as e:
+        logging.error(f"{self.owner}: {str(e)}")
+        raise
+```
+
+```bash
+python day06/bank_with_errors.py
+# Check the generated log file
+cat bank.log
+```
+
+**What I Learned:**
+
+_Try/Except Blocks:_ Think of it like a safety net - you "try" risky code, and if it fails, you "catch" the error instead of crashing. Like catching a ball before it hits the ground.
+
+_Custom Exceptions:_ Instead of generic errors, you create specific ones (like `InsufficientFundsError`). It's like having different alarm sounds - you instantly know what went wrong.
+
+_Logging:_ Better than print statements because it saves everything to a file with timestamps. You can track what happened even after the program closes - super useful for debugging production issues.
+
+**Key Takeaways:**
+
+- Never let your program crash silently - always handle errors gracefully
+- Custom exceptions make debugging way easier than generic error messages
+- Logging to files means you can track issues even after deployment
+- `try/except` blocks separate normal flow from error handling
+
+---
+
 ## Project Structure
 
 ```
@@ -169,12 +225,13 @@ backend-journey/
 ├── day03/          # Basic bank account
 ├── day04/          # Banking with inheritance
 ├── day05/          # Dataclasses & type hints
+├── day06/          # Exception handling & logging
 └── requirements.txt
 ```
 
 ## What's Next
 
-**Day 6-7** - Exception handling, logging, and JSON persistence for data storage
+**Day 7** - JSON persistence for saving account data between sessions
 
 **Week 2 ahead** - CLI task manager, file operations, and working with APIs
 
