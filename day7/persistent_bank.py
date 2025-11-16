@@ -121,7 +121,7 @@ class BankAccount:
                     "transactions": acc.transaction_history.to_list()
                 }
             with open(filename, "w") as f:
-                json.dump(data_to_save, f, indent=4)
+                json.dump(data_to_save, f, indent=4)#indent mean to make the json file more readable
             logging.info("All accounts saved successfully.")
         except Exception as e:
             logging.error(f"Error saving accounts: {str(e)}")

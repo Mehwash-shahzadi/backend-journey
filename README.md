@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 1 complete (Days 1-7). Let's see where this goes.
+This repo is my public accountability. Week 1 complete, Week 2 in progress (Days 8-9). Let's see where this goes.
 
 ## Quick Start
 
@@ -16,6 +16,14 @@ cd backend-journey
 python -m venv venv
 source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+**Try the Task Manager:**
+
+```bash
+cd day08-09/task_manager
+python main.py add "Your first task"
+python main.py list
 ```
 
 ## Progress
@@ -278,24 +286,155 @@ _Context Managers (`with` statement):_ Automatically closes files even if errors
 
 ---
 
+## Week 2: Building Real Applications
+
+### Day 8-9: CLI Task Manager Project
+
+**What I Built:** A complete command-line task manager with CRUD operations
+
+This was the big one - combined everything from Week 1 into a real application. Built a full task manager that you can use from the terminal. It has add, list, complete, and delete commands. All data persists to JSON, and you can filter by status or sort by date.
+
+**Why CLI Tools Matter in Backend:**
+
+CLI (Command Line Interface) tools are everywhere in backend development. Think of them as text-based apps that run in the terminal instead of having buttons and windows. Here's why they're important:
+
+- **DevOps & Automation:** Backend engineers use CLI tools daily - deploying apps (`git push`), managing databases (`psql`), running migrations, checking logs
+- **Server Management:** Most servers don't have a visual interface. Everything happens through terminal commands
+- **Scripts & Automation:** CLI tools can be called from scripts, scheduled tasks (cron jobs), or CI/CD pipelines
+- **How They Work:** User types a command → CLI parses it → Your code executes → Results display in terminal
+
+Real examples: `docker run`, `npm install`, `pytest`, `aws s3 sync`. All CLI tools. Building one teaches you how to structure commands, handle user input, and create reusable tools - essential backend skills.
+
+**Project Structure:**
+
+```
+day08-09/task_manager/
+├── models.py        # Task dataclass
+├── manager.py       # TaskManager with CRUD logic
+├── storage.py       # JSON persistence
+├── cli.py           # Click-based CLI interface
+├── main.py          # Entry point
+└── tasks.json       # Auto-generated data file
+```
+
+**Key Code Snippets:**
+
+_Task Model (models.py):_
+
+```python
+@dataclass
+class Task:
+    id: int
+    title: str
+    status: str = "pending"
+    created_at: datetime = datetime.now()
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "status": self.status,
+            "created_at": self.created_at.isoformat()
+        }
+```
+
+_CLI Interface (cli.py):_
+
+```python
+@click.group()
+def cli():
+    """Simple CLI Task Manager"""
+    pass
+
+@cli.command()
+@click.argument("title")
+def add(title):
+    """Add a new task"""
+    task = manager.add(title)
+    save_to_file(TASKS_FILE, manager)
+    click.echo(f"Task added: {task.title} (id={task.id})")
+
+@cli.command(name="list")
+@click.option("--status", type=click.Choice(["pending", "completed"]))
+@click.option("--sort", type=click.Choice(["asc", "desc"]), default="asc")
+def list_tasks(status, sort):
+    """List tasks with filtering and sorting"""
+    tasks = manager.list()
+    if status:
+        tasks = [t for t in tasks if t.status == status]
+    tasks.sort(key=lambda t: t.created_at, reverse=(sort == "desc"))
+    for task in tasks:
+        click.echo(f"[{task.id}] {task.title} - {task.status}")
+```
+
+**Usage Examples:**
+
+```bash
+# Add tasks
+python main.py add "Buy groceries"
+python main.py add "Finish Day 9 exercises"
+
+# List all tasks
+python main.py list
+
+# List only pending tasks, sorted newest first
+python main.py list --status pending --sort desc
+
+# Complete a task
+python main.py complete 1
+
+# Delete a task
+python main.py delete 2
+```
+
+**What I Learned:**
+
+_CLI Arguments:_ Click library makes it easy to build professional command-line tools. Arguments are required values, options are optional flags.
+
+_CRUD Operations:_ Create, Read, Update, Delete - the fundamental operations for managing data. Every backend system needs these.
+
+_Project Organization:_ Splitting code into separate files (models, manager, storage, cli) makes it maintainable. Each file has one clear responsibility.
+
+**Key Takeaways:**
+
+- Click is way better than raw `argparse` for building CLIs
+- Separating concerns (models/manager/storage/cli) makes debugging easier
+- Options with `click.Choice()` prevent invalid user input
+- This project is basically a mini backend - just without HTTP/database
+
+---
+
 ## Project Structure
 
 ```
 backend-journey/
-├── day01/          # Environment setup
-├── day02/          # Calculator with modules
-├── day03/          # Basic bank account
-├── day04/          # Banking with inheritance
-├── day05/          # Dataclasses & type hints
-├── day06/          # Exception handling & logging
-├── day07/          # JSON persistence
+├── day01/              # Environment setup
+├── day02/              # Calculator with modules
+├── day03/              # Basic bank account
+├── day04/              # Banking with inheritance
+├── day05/              # Dataclasses & type hints
+├── day06/              # Exception handling & logging
+├── day07/              # JSON persistence
+├── day08-09/           # CLI Task Manager
+│   └── task_manager/
+│       ├── models.py
+│       ├── manager.py
+│       ├── storage.py
+│       ├── cli.py
+│       └── main.py
 └── requirements.txt
 ```
 
 ## What's Next
 
-**Week 2** - Starting Monday with a CLI task manager project
+**Day 10-11** - Advanced OOP patterns: magic methods (`__str__`, `__repr__`, `__eq__`, `__lt__`) and Strategy design pattern for flexible sorting
 
-The long-term roadmap: REST APIs, SQL/NoSQL databases, authentication, Docker, and eventually deploying production applications.
+**Day 12-14** - Final polish: Enums for priority levels, statistics dashboard, CSV export, Rich library for beautiful terminal output, comprehensive documentation
+
+**Week 3** - FastAPI fundamentals, building REST APIs, request/response handling
+
+**Week 4** - Database integration (SQLAlchemy), CRUD operations, relationships
+
+The roadmap ahead: Authentication & JWT, Docker containers, testing with pytest, CI/CD pipelines, and cloud deployment (AWS/GCP).
 
 ---
