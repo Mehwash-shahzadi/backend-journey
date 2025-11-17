@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 1 complete, Week 2 in progress (Days 8-9). Let's see where this goes.
+This repo is my public accountability. Week 1 complete, Week 2 in progress (Days 8-11). Let's see where this goes.
 
 ## Quick Start
 
@@ -404,6 +404,137 @@ _Project Organization:_ Splitting code into separate files (models, manager, sto
 
 ---
 
+### Day 10-11: Magic Methods & Design Patterns
+
+**What I Built:** Made the task manager smarter with Python's special methods and flexible sorting
+
+Learned about "magic methods" (those functions with double underscores like `__str__`) and the Strategy pattern. Now tasks can be compared, sorted, and printed naturally. Plus, I can switch between different sorting methods without rewriting code.
+
+**What Are Magic Methods?**
+
+Magic methods are special functions in Python that start and end with `__` (double underscores). They let you teach Python how to work with your custom classes.
+
+Think of it like this: When you do `len([1, 2, 3])`, Python calls the list's `__len__` method behind the scenes. Now your own classes can do the same!
+
+**Magic Methods I Added:**
+
+```python
+@dataclass
+class Task:
+    id: int
+    title: str
+    priority: int = 1
+    status: str = "pending"
+    created_at: datetime = field(default_factory=datetime.now)
+
+    def __str__(self):
+        """What you see when you print(task)"""
+        return f"{self.id}. {self.title} ({self.status}, priority={self.priority})"
+
+    def __repr__(self):
+        """What you see in the debugger - shows all details"""
+        return f"Task(id={self.id}, title='{self.title}', priority={self.priority})"
+
+    def __eq__(self, other):
+        """How Python checks if two tasks are equal: task1 == task2"""
+        return self.id == other.id
+
+    def __lt__(self, other):
+        """How Python compares tasks for sorting: task1 < task2"""
+        return self.created_at < other.created_at
+```
+
+**Making TaskManager Iterable:**
+
+```python
+class TaskManager:
+    def __len__(self):
+        """Now you can use: len(manager)"""
+        return len(self.tasks)
+
+    def __getitem__(self, index):
+        """Now you can use: manager[0] or loop with 'for task in manager'"""
+        return self.tasks[index]
+```
+
+**Usage:**
+
+```python
+manager = TaskManager()
+manager.add("Buy groceries", priority=2)
+manager.add("Walk dog", priority=1)
+
+# Magic methods in action!
+print(len(manager))           # Works because of __len__
+for task in manager:          # Works because of __getitem__
+    print(task)               # Works because of __str__
+
+# Comparing tasks
+if manager[0] == manager[1]:  # Works because of __eq__
+    print("Same task!")
+```
+
+**What Is the Strategy Pattern?**
+
+The Strategy pattern is a way to make your code flexible. Instead of hardcoding one way to do something (like sorting), you create different "strategies" that can be swapped in and out.
+
+**Simple analogy:** Your phone has different modes - Silent, Vibrate, Ring. Same phone, different behaviors. That's Strategy pattern!
+
+**How I Implemented It:**
+
+```python
+# Different sorting strategies
+class SortByDate:
+    """Sort tasks by when they were created"""
+    def sort(self, tasks):
+        return sorted(tasks, key=lambda t: t.created_at)
+
+class SortByPriority:
+    """Sort tasks by priority (higher numbers first)"""
+    def sort(self, tasks):
+        return sorted(tasks, key=lambda t: t.priority, reverse=True)
+
+# TaskManager accepts any sorting strategy
+class TaskManager:
+    def __init__(self, sorter=None):
+        self.tasks = []
+        self.sorter = sorter  # Can be SortByDate or SortByPriority
+
+    def list(self):
+        """Returns tasks using whatever sorting strategy was chosen"""
+        if self.sorter:
+            return self.sorter.sort(self.tasks)
+        return self.tasks
+```
+
+**Usage:**
+
+```python
+# Create two managers with different sorting
+manager1 = TaskManager(sorter=SortByDate())
+manager2 = TaskManager(sorter=SortByPriority())
+
+# Same tasks, different order!
+manager1.list()  # Sorted by date
+manager2.list()  # Sorted by priority
+```
+
+**Why This Matters:**
+
+_Magic Methods:_ Make your classes feel natural to use. Instead of `task.get_length()`, you just use `len(task)`. Makes code cleaner and more "Pythonic."
+
+_Strategy Pattern:_ Keeps code flexible. Want to add "SortByStatus" later? Just create a new class. No need to touch existing code. This is called "Open/Closed Principle" - open for extension, closed for modification.
+
+**Key Takeaways:**
+
+- `__str__` = what users see, `__repr__` = what developers see while debugging
+- `__eq__` and `__lt__` let Python know how to compare your objects
+- `__len__` and `__getitem__` make your class work like a list
+- Strategy pattern = swappable behaviors without changing main code
+- Real-world use: FastAPI uses this pattern for dependency injection
+
+---
+
 ## Project Structure
 
 ```
@@ -417,17 +548,17 @@ backend-journey/
 ├── day07/              # JSON persistence
 ├── day08-09/           # CLI Task Manager
 │   └── task_manager/
+├── day10-11/           # Magic Methods & Strategy Pattern
+│   └── task_manager_v2/
 │       ├── models.py
 │       ├── manager.py
+│       ├── strategies.py
 │       ├── storage.py
-│       ├── cli.py
 │       └── main.py
 └── requirements.txt
 ```
 
 ## What's Next
-
-**Day 10-11** - Advanced OOP patterns: magic methods (`__str__`, `__repr__`, `__eq__`, `__lt__`) and Strategy design pattern for flexible sorting
 
 **Day 12-14** - Final polish: Enums for priority levels, statistics dashboard, CSV export, Rich library for beautiful terminal output, comprehensive documentation
 
