@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 1 complete, Week 2 in progress (Days 8-11). Let's see where this goes.
+This repo is my public accountability. **Week 2 complete!** Built a full CLI task manager from scratch. Let's see where this goes.
 
 ## Quick Start
 
@@ -21,9 +21,10 @@ pip install -r requirements.txt
 **Try the Task Manager:**
 
 ```bash
-cd day08-09/task_manager
-python main.py add "Your first task"
+cd day12-14/task_manager_final
+python main.py add "Your first task" --priority HIGH --tags work,urgent
 python main.py list
+python main.py stats
 ```
 
 ## Progress
@@ -535,6 +536,203 @@ _Strategy Pattern:_ Keeps code flexible. Want to add "SortByStatus" later? Just 
 
 ---
 
+### Day 12-14: Final Polish & Production Ready
+
+**What I Built:** Completed the task manager with professional features and beautiful UI
+
+Added all the finishing touches that make this portfolio-ready. Now it has priority levels using Enums, tag filtering, CSV export for data portability, statistics dashboard, and gorgeous terminal output with Rich library. Every function has documentation. This is now a production-quality project.
+
+**What Are Enums?**
+
+Enums (Enumerations) are a way to define a set of named constants. Instead of using strings like "HIGH", "MEDIUM", "LOW" everywhere (which can have typos), you create an Enum that limits the choices.
+
+**Think of it like:** A dropdown menu. You can only select from the options given - no typos, no invalid values.
+
+**Priority System with Enums:**
+
+```python
+from enum import Enum
+
+class Priority(Enum):
+    """Only these three values are allowed"""
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+
+@dataclass
+class Task:
+    id: int
+    title: str
+    priority: Priority = Priority.MEDIUM  # Must be one of the Enum values
+    tags: List[str] = field(default_factory=list)  # Can add multiple tags
+```
+
+**Why Enums are Better:**
+
+```python
+# Without Enum - Typos can happen
+task.priority = "HIHG"  # Typo! Will cause bugs later
+
+# With Enum - IDE catches mistakes
+task.priority = Priority.HIGH  # Autocomplete helps, typos impossible
+```
+
+**CSV Export - Taking Your Data Elsewhere:**
+
+```python
+def export_to_csv(self, filename: str = "tasks_export.csv") -> None:
+    """Export all tasks to a CSV file that Excel/Google Sheets can open"""
+    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        # Header row
+        writer.writerow(["id", "title", "status", "created_at", "priority", "tags"])
+        # Data rows
+        for t in self.tasks:
+            writer.writerow([
+                t.id,
+                t.title,
+                t.status,
+                t.created_at.isoformat(),
+                t.priority.value,  # Get the string value from Enum
+                ";".join(t.tags)   # Combine tags into one cell
+            ])
+```
+
+**Statistics Dashboard:**
+
+```python
+def statistics(self, overdue_days: int = 7) -> dict:
+    """Calculate task stats - total, completed, overdue"""
+    total = len(self.tasks)
+    completed = sum(1 for t in self.tasks if t.status == "completed")
+    completed_pct = (completed / total * 100) if total else 0.0
+
+    # Find overdue tasks (pending for more than X days)
+    cutoff = datetime.now() - timedelta(days=overdue_days)
+    overdue = sum(1 for t in self.tasks
+                  if t.status == "pending" and t.created_at < cutoff)
+
+    return {
+        "total": total,
+        "completed": completed,
+        "completed_pct": round(completed_pct, 2),
+        "overdue": overdue
+    }
+```
+
+**Rich Library - Beautiful Terminal Output:**
+
+```python
+from rich.console import Console
+from rich.table import Table
+
+console = Console()
+
+def display_tasks(tasks):
+    """Show tasks in a pretty table with colors"""
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("ID", style="dim")
+    table.add_column("Title")
+    table.add_column("Priority")
+    table.add_column("Status")
+    table.add_column("Tags")
+
+    for t in tasks:
+        # Color code priorities: HIGH=red, MEDIUM=yellow, LOW=green
+        pri_color = "red" if t.priority == Priority.HIGH else \
+                    ("yellow" if t.priority == Priority.MEDIUM else "green")
+
+        table.add_row(
+            str(t.id),
+            t.title,
+            f"[{pri_color}]{t.priority.value}[/{pri_color}]",
+            t.status,
+            ", ".join(t.tags)
+        )
+
+    console.print(table)
+```
+
+**Advanced Filtering in CLI:**
+
+```bash
+# Filter by multiple criteria
+python main.py list --status pending --priority HIGH --tag urgent
+
+# Sort by priority instead of date
+python main.py list --sort priority --desc
+
+# Export everything to CSV
+python main.py export tasks_export.csv
+
+# See statistics
+python main.py stats --overdue-days 3
+```
+
+**Demo:**
+
+![Task Manager Demo](day12-14/demo.gif)
+
+**What I Learned:**
+
+_Enums:_ They're like safety rails. Once you define the valid options, Python won't let you use anything else. Prevents bugs from typos and invalid values.
+
+_CSV Export:_ Universal format - works with Excel, Google Sheets, pandas, any data tool. Good for sharing data or importing into other systems.
+
+_Rich Library:_ Transforms boring terminal output into beautiful tables with colors. Makes CLI apps feel professional and easier to read.
+
+_Statistics:_ Real apps need metrics. Users want to know: How many tasks? Completion rate? What's overdue? Simple math, big impact.
+
+**Project Structure:**
+
+```
+day12-14/task_manager_final/
+├── models.py           # Task class with Enums and magic methods
+├── manager.py          # TaskManager with filtering, stats, CSV export
+├── strategies.py       # SortByDate and SortByPriority
+├── storage.py          # JSON save/load
+├── cli.py              # Rich-powered CLI with Click
+├── main.py             # Entry point
+├── tasks.json          # Auto-generated data file
+├── tasks_export.csv    # Example CSV export
+└── demo.gif            # Demo showing the app in action
+```
+
+**Key Takeaways:**
+
+- Enums prevent invalid values and make code self-documenting
+- CSV export makes your data portable to other tools
+- Rich library turns terminal apps from ugly to beautiful
+- Statistics give users insight into their data
+- Good documentation and demos make projects portfolio-ready
+
+---
+
+## Week 2 Wrap-Up
+
+**What I Built This Week:**
+
+- Full-featured CLI task manager with CRUD operations
+- Magic methods making classes feel Pythonic
+- Strategy pattern for flexible sorting
+- Enums for type safety
+- CSV export and statistics
+- Beautiful Rich terminal UI
+- Complete documentation
+
+**Skills Gained:**
+
+- Advanced OOP (magic methods, design patterns)
+- CLI development with Click
+- Data export and statistics
+- Terminal UI design with Rich
+- Clean code principles
+- Professional documentation
+
+This project is now portfolio-ready and demonstrates real backend engineering skills.
+
+---
+
 ## Project Structure
 
 ```
@@ -550,22 +748,26 @@ backend-journey/
 │   └── task_manager/
 ├── day10-11/           # Magic Methods & Strategy Pattern
 │   └── task_manager_v2/
+├── day12-14/           # Production-Ready Final Version
+│   └── task_manager_final/
 │       ├── models.py
 │       ├── manager.py
 │       ├── strategies.py
 │       ├── storage.py
-│       └── main.py
+│       ├── cli.py
+│       ├── main.py
+│       ├── tasks.json
+│       ├── tasks_export.csv
+│       └── demo.gif
 └── requirements.txt
 ```
 
 ## What's Next
 
-**Day 12-14** - Final polish: Enums for priority levels, statistics dashboard, CSV export, Rich library for beautiful terminal output, comprehensive documentation
+**Week 3** - FastAPI fundamentals: Building REST APIs, request/response handling, path parameters, query parameters
 
-**Week 3** - FastAPI fundamentals, building REST APIs, request/response handling
+**Week 4** - Database integration: SQLAlchemy ORM, CRUD operations, relationships, migrations
 
-**Week 4** - Database integration (SQLAlchemy), CRUD operations, relationships
-
-The roadmap ahead: Authentication & JWT, Docker containers, testing with pytest, CI/CD pipelines, and cloud deployment (AWS/GCP).
+The roadmap ahead: Authentication & JWT tokens, Docker containers, pytest for testing, CI/CD pipelines, and cloud deployment (AWS/GCP).
 
 ---

@@ -1,0 +1,13 @@
+[
+    {
+        "id": 1,
+        "title": "Buy groceries",
+        "status": "completed",
+        "created_at": "2025-11-19T01:38:56.675612",
+        "priority": "HIGH",
+        "tags": [
+            "shopping",
+            "home"
+        ]
+    }
+]
