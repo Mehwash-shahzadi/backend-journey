@@ -2,3 +2,6 @@ rich
 requests
 mypy
 click
+fastapi
+uvicorn[standard]
+pydantic[email]
