@@ -570,10 +570,10 @@ class Task:
 **Why Enums are Better:**
 
 ```python
-# ❌ Without Enum - Typos can happen
+#  Without Enum - Typos can happen
 task.priority = "HIHG"  # Typo! Will cause bugs later
 
-# ✅ With Enum - IDE catches mistakes
+#  With Enum - IDE catches mistakes
 task.priority = Priority.HIGH  # Autocomplete helps, typos impossible
 ```
 
@@ -803,9 +803,20 @@ _Auto-Generated Docs:_ FastAPI automatically creates interactive documentation a
 
 **Screenshots:**
 
+**Hello World Endpoint:**
+
 ![Hello World Response](day15/screenshots/hello_world.png)
+
+**Path Parameter Example (`/items/{item_id}`):**
+
 ![Path Parameter](day15/screenshots/item_id.png)
+
+**Query Parameters Example (`/search?query=phone&limit=5`):**
+
 ![Query Parameters](day15/screenshots/search.png)
+
+**Auto-Generated API Documentation (`/docs`):**
+
 ![Auto Docs](day15/screenshots/docs.png)
 
 **Key Takeaways:**
