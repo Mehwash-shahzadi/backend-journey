@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. **Week 2 complete!** Built a full CLI task manager from scratch. Let's see where this goes.
+This repo is my public accountability. Week 2 complete. Now diving into FastAPI and REST APIs (Week 3). Let's see where this goes.
 
 ## Quick Start
 
@@ -49,7 +49,7 @@ python day01/setup_check.py
 
 ---
 
-### Day 2: Modules & Packages
+#### Day 2: Modules & Packages
 
 **What I Built:** Multi-file calculator with custom utility modules
 
@@ -67,7 +67,7 @@ python day02/calculator/main.py
 
 ---
 
-### Day 3: OOP Basics
+#### Day 3: OOP Basics
 
 **What I Built:** Basic banking system with BankAccount class
 
@@ -97,7 +97,7 @@ python day03/bank_system.py
 
 ---
 
-### Day 4: Inheritance & Composition
+#### Day 4: Inheritance & Composition
 
 **What I Built:** Extended banking system with account types and transaction history
 
@@ -126,7 +126,7 @@ python day04/bank_system_v2.py
 
 ---
 
-### Day 5: Dataclasses & Type Hints
+#### Day 5: Dataclasses & Type Hints
 
 **What I Built:** Rewrote the entire banking system using dataclasses and proper type hints
 
@@ -168,7 +168,7 @@ mypy day05/typed_models.py
 
 ---
 
-### Day 6: Exception Handling & Logging
+#### Day 6: Exception Handling & Logging
 
 **What I Built:** Added proper error handling and logging to the banking system
 
@@ -225,7 +225,7 @@ _Logging:_ Better than print statements because it saves everything to a file wi
 
 ---
 
-### Day 7: File Handling & JSON Persistence
+#### Day 7: File Handling & JSON Persistence
 
 **What I Built:** Added the ability to save and load account data using JSON files
 
@@ -570,10 +570,10 @@ class Task:
 **Why Enums are Better:**
 
 ```python
-# Without Enum - Typos can happen
+# ❌ Without Enum - Typos can happen
 task.priority = "HIHG"  # Typo! Will cause bugs later
 
-# With Enum - IDE catches mistakes
+# ✅ With Enum - IDE catches mistakes
 task.priority = Priority.HIGH  # Autocomplete helps, typos impossible
 ```
 
@@ -733,6 +733,191 @@ This project is now portfolio-ready and demonstrates real backend engineering sk
 
 ---
 
+## Week 3: FastAPI Fundamentals
+
+### Day 15: HTTP Basics & FastAPI Setup
+
+**What I Built:** My first REST API with FastAPI
+
+Started learning web APIs today. FastAPI makes it surprisingly easy to create endpoints that respond to HTTP requests. Set up a basic API server with three different routes - one simple hello world, one with path parameters, and one with query parameters.
+
+**What is HTTP and REST API?**
+
+HTTP (HyperText Transfer Protocol) is how browsers and apps talk to servers. When you visit a website, your browser sends an HTTP request, the server processes it, and sends back a response.
+
+REST API is a way to structure these conversations. Think of it like a restaurant menu - each endpoint is a dish you can order, and HTTP methods (GET, POST, PUT, DELETE) are how you place your order.
+
+**HTTP Methods I Learned:**
+
+- GET: Retrieve data (like reading a menu)
+- POST: Create new data (like placing an order)
+- PUT: Update existing data (like changing your order)
+- DELETE: Remove data (like canceling an order)
+
+**My First FastAPI App:**
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    """Simple Hello World endpoint"""
+    return {"Hello": "World"}
+
+# Path parameter - part of the URL
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
+    """Get item by ID"""
+    return {"item_id": item_id}
+
+# Query parameter - like filtering options
+@app.get("/search")
+def search_items(query: str = None, limit: int = 10):
+    """Search items with optional query and limit"""
+    return {"query": query, "limit": limit}
+```
+
+**Running the API:**
+
+```bash
+cd day15/first_api
+uvicorn main:app --reload
+```
+
+Then visit:
+
+- `http://localhost:8000/` - See hello world
+- `http://localhost:8000/items/42` - Path parameter example
+- `http://localhost:8000/search?query=phone&limit=5` - Query parameters
+- `http://localhost:8000/docs` - Auto-generated documentation
+
+**What I Learned:**
+
+_Path Parameters:_ Part of the URL itself. Like `/users/123` where 123 is the user ID. Used for identifying specific resources.
+
+_Query Parameters:_ Come after `?` in the URL. Like `/search?query=hello&limit=10`. Used for filtering or options.
+
+_Auto-Generated Docs:_ FastAPI automatically creates interactive documentation at `/docs`. You can test your API right in the browser without Postman.
+
+**Screenshots:**
+
+![Hello World Response](day15/screenshots/hello_world.png)
+![Path Parameter](day15/screenshots/item_id.png)
+![Query Parameters](day15/screenshots/search.png)
+![Auto Docs](day15/screenshots/docs.png)
+
+**Key Takeaways:**
+
+- FastAPI uses Python type hints to validate data automatically
+- Path parameters are for identifying resources, query parameters are for filtering
+- The `/docs` endpoint gives you free interactive API documentation
+- `uvicorn --reload` automatically restarts the server when you change code
+
+---
+
+### Day 16: Pydantic Models & Validation
+
+**What I Built:** Added data validation with Pydantic models
+
+Today was about making the API smarter. Instead of accepting any random data, I used Pydantic models to define exactly what structure the data should have. Now the API automatically validates emails, checks password length, and rejects bad data before it even reaches my code.
+
+**What is Pydantic?**
+
+Pydantic is a data validation library. You define what your data should look like using Python classes, and Pydantic makes sure incoming data matches that structure.
+
+Think of it like a bouncer at a club checking IDs. If the data doesn't match the rules, it doesn't get in.
+
+**Why Separate Request and Response Models?**
+
+Request model: What the client sends (includes password)
+Response model: What we send back (excludes sensitive data like passwords)
+
+This keeps passwords and sensitive info from accidentally being sent back to users.
+
+**User Models with Validation:**
+
+```python
+from pydantic import BaseModel, EmailStr, Field
+
+# What we accept when creating a user
+class UserCreate(BaseModel):
+    email: EmailStr                    # Must be valid email format
+    password: str = Field(min_length=8)  # At least 8 characters
+    age: int = Field(gt=0)              # Must be greater than 0
+
+# What we send back (no password!)
+class UserResponse(BaseModel):
+    email: EmailStr
+    age: int
+```
+
+**API Endpoint Using Models:**
+
+```python
+from fastapi import FastAPI
+from models import UserCreate, UserResponse
+
+app = FastAPI()
+
+@app.post("/users", response_model=UserResponse)
+def create_user(user: UserCreate):
+    """Create a new user"""
+    # Pydantic already validated the data
+    # We return only safe fields
+    return UserResponse(
+        email=user.email,
+        age=user.age
+    )
+```
+
+**Testing Validation:**
+
+Valid request:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "secure123",
+  "age": 25
+}
+```
+
+Response: Success!
+
+Invalid request:
+
+```json
+{
+  "email": "not-an-email",
+  "password": "short",
+  "age": -5
+}
+```
+
+Response: Validation error with details about what's wrong
+
+**What I Learned:**
+
+_EmailStr:_ Pydantic's special type that validates email format automatically. Rejects "notanemail" but accepts "user@example.com".
+
+_Field Validators:_ `min_length=8` means password must be at least 8 characters. `gt=0` means age must be greater than zero.
+
+_Automatic Validation:_ If data is invalid, FastAPI returns a 422 error with details before your function even runs. You don't have to write validation code.
+
+_Security:_ Using separate response models prevents accidentally leaking passwords or other sensitive data.
+
+**Key Takeaways:**
+
+- Pydantic models define the shape of your data
+- Validation happens automatically - no manual checks needed
+- Always use separate request/response models for security
+- Field validators make rules explicit and self-documenting
+- Invalid data gets rejected with helpful error messages
+
+---
+
 ## Project Structure
 
 ```
@@ -748,26 +933,29 @@ backend-journey/
 │   └── task_manager/
 ├── day10-11/           # Magic Methods & Strategy Pattern
 │   └── task_manager_v2/
-├── day12-14/           # Production-Ready Final Version
+├── day12-14/           # Production-Ready Task Manager
 │   └── task_manager_final/
-│       ├── models.py
-│       ├── manager.py
-│       ├── strategies.py
-│       ├── storage.py
-│       ├── cli.py
+├── day15/              # First FastAPI App
+│   ├── first_api/
+│   │   └── main.py
+│   └── screenshots/
+│       ├── docs.png
+│       ├── hello_world.png
+│       ├── item_id.png
+│       └── search.png
+├── day16/              # Pydantic Models & Validation
+│   └── user_api/
 │       ├── main.py
-│       ├── tasks.json
-│       ├── tasks_export.csv
-│       └── demo.gif
+│       └── models.py
 └── requirements.txt
 ```
 
 ## What's Next
 
-**Week 3** - FastAPI fundamentals: Building REST APIs, request/response handling, path parameters, query parameters
+**Day 17-18** - Async programming, database setup with PostgreSQL, SQLAlchemy basics
 
-**Week 4** - Database integration: SQLAlchemy ORM, CRUD operations, relationships, migrations
+**Week 4** - Building a complete CRUD API with database integration, relationships, and migrations
 
-The roadmap ahead: Authentication & JWT tokens, Docker containers, pytest for testing, CI/CD pipelines, and cloud deployment (AWS/GCP).
+The roadmap ahead: Authentication & JWT tokens, Docker containers, pytest for testing, CI/CD pipelines, and cloud deployment.
 
 ---
