@@ -1110,6 +1110,8 @@ _Constraints:_ UNIQUE prevents duplicates, NOT NULL requires a value.
 
 ## Project Structure
 
+## Project Structure
+
 ```
 backend-journey/
 ├── day01/              # Environment setup
@@ -1137,6 +1139,26 @@ backend-journey/
 │   └── user_api/
 │       ├── main.py
 │       └── models.py
+├── day17/              # CRUD API with In-Memory Storage
+│   └── crud_api/
+│       ├── main.py
+│       └── models.py
+├── day18/              # Async Programming
+│   └── async_api/
+│       ├── main.py
+│       └── models.py
+├── day19/              # Dependency Injection
+│   └── dependency_api/
+│       ├── main.py
+│       ├── models.py
+│       └── dependency.py
+├── day20/              # Background Tasks & Middleware
+│   └── background_api/
+│       ├── main.py
+│       └── models.py
+├── day21/              # PostgreSQL Setup & SQL Practice
+│   └── postgres_practice/
+│       └── init.sql
 └── requirements.txt
 ```
 
