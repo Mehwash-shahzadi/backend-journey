@@ -786,6 +786,21 @@ cd day15/first_api
 uvicorn main:app --reload
 ```
 
+Then visit:
+
+- `http://localhost:8000/` - See hello world
+- `http://localhost:8000/items/42` - Path parameter example
+- `http://localhost:8000/search?query=phone&limit=5` - Query parameters
+- `http://localhost:8000/docs` - Auto-generated documentation
+
+**What I Learned:**
+
+_Path Parameters:_ Part of the URL itself. Like `/users/123` where 123 is the user ID. Used for identifying specific resources.
+
+_Query Parameters:_ Come after `?` in the URL. Like `/search?query=hello&limit=10`. Used for filtering or options.
+
+_Auto-Generated Docs:_ FastAPI automatically creates interactive documentation at `/docs`. You can test your API right in the browser without Postman.
+
 **Screenshots:**
 
 **Hello World Endpoint:**
@@ -803,22 +818,6 @@ uvicorn main:app --reload
 **Auto-Generated API Documentation (`/docs`):**
 
 ![Auto Docs](day15/screenshots/docs.png)
-
-**What I Learned:**
-
-_Path Parameters:_ Part of the URL itself. Like `/users/123` where 123 is the user ID. Used for identifying specific resources.
-
-_Query Parameters:_ Come after `?` in the URL. Like `/search?query=hello&limit=10`. Used for filtering or options.
-
-_Auto-Generated Docs:_ FastAPI automatically creates interactive documentation at `/docs`. You can test your API right in the browser without Postman.
-
-**Screenshots:**
-
-![Hello World Response](day15/screenshots/hello_world.png)
-![Path Parameter](day15/screenshots/item_id.png)
-![Query Parameters](day15/screenshots/search.png)
-![Auto Docs](day15/screenshots/docs.png)
-
 **Key Takeaways:**
 
 - FastAPI uses Python type hints to validate data automatically
