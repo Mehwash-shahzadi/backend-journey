@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 2 complete. Now diving into FastAPI and REST APIs (Week 3). Let's see where this goes.
+This repo is my public accountability. Week 2 complete. Week 3 in progress - building REST APIs with FastAPI and PostgreSQL. Let's see where this goes.
 
 ## Quick Start
 
@@ -803,20 +803,9 @@ _Auto-Generated Docs:_ FastAPI automatically creates interactive documentation a
 
 **Screenshots:**
 
-**Hello World Endpoint:**
-
 ![Hello World Response](day15/screenshots/hello_world.png)
-
-**Path Parameter Example (`/items/{item_id}`):**
-
 ![Path Parameter](day15/screenshots/item_id.png)
-
-**Query Parameters Example (`/search?query=phone&limit=5`):**
-
 ![Query Parameters](day15/screenshots/search.png)
-
-**Auto-Generated API Documentation (`/docs`):**
-
 ![Auto Docs](day15/screenshots/docs.png)
 
 **Key Takeaways:**
@@ -929,6 +918,186 @@ _Security:_ Using separate response models prevents accidentally leaking passwor
 
 ---
 
+### Day 17: CRUD Operations
+
+**What I Built:** Full REST API with Create, Read, Update, Delete operations
+
+Built a complete CRUD API using in-memory storage (Python list). This helped me focus on REST conventions and HTTP status codes without database complexity yet.
+
+```python
+@app.post("/users", status_code=201)
+async def create_user(user: UserCreate):
+    user_id = len(users) + 1
+    new_user = UserResponse(id=user_id, name=user.name, email=user.email, age=user.age)
+    users.append(new_user)
+    return new_user
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    for user in users:
+        if user.id == user_id:
+            return user
+    raise HTTPException(status_code=404, detail="User not found")
+```
+
+**What I Learned:**
+
+_CRUD:_ Create (POST), Read (GET), Update (PUT), Delete (DELETE) - the four basic operations for any data-driven app.
+
+_REST Conventions:_ URLs are resources (nouns like `/users`), HTTP methods are actions (verbs like GET, POST).
+
+_Status Codes:_ 200 (success), 201 (created), 404 (not found), 422 (validation error).
+
+**Key Takeaways:**
+
+- CRUD is 80% of backend work
+- Use proper status codes - 201 for creation, 404 for not found
+- HTTPException returns formatted error responses
+
+---
+
+### Day 18: Async Programming
+
+**What I Built:** Converted API to async and added concurrent request handling
+
+Learned async/await - a way to handle multiple requests simultaneously without blocking.
+
+```python
+@app.get("/slow")
+async def slow_endpoint():
+    await asyncio.sleep(2)  # Simulate database wait
+    return {"message": "Done"}
+
+@app.get("/external")
+async def fetch_data():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://jsonplaceholder.typicode.com/users")
+    return response.json()
+```
+
+**What I Learned:**
+
+_Async/Await:_ Lets server handle other requests while waiting for I/O (database, API calls). Like chopping vegetables while water boils instead of just watching it.
+
+_When to Use:_ Database queries, external API calls, file operations. Not for CPU-heavy calculations.
+
+**Key Takeaways:**
+
+- Async handles more concurrent users, not faster single requests
+- Use `async def` for routes, `await` for I/O operations
+- FastAPI handles async automatically
+
+---
+
+### Day 19: Dependency Injection
+
+**What I Built:** Reusable dependencies for pagination and validation
+
+Dependency Injection = write validation/logic once, reuse everywhere.
+
+```python
+def get_pagination(skip: int = 0, limit: int = 10):
+    if skip < 0 or limit <= 0:
+        raise HTTPException(status_code=400, detail="Invalid params")
+    return {"skip": skip, "limit": limit}
+
+@app.get("/users")
+async def get_users(pagination: dict = Depends(get_pagination)):
+    skip = pagination["skip"]
+    limit = pagination["limit"]
+    return users[skip:skip + limit]
+```
+
+**What I Learned:**
+
+_Depends():_ FastAPI calls the dependency function automatically. No need to manually call it.
+
+_Common Uses:_ Pagination, authentication, database connections, user validation.
+
+**Key Takeaways:**
+
+- Dependencies keep code DRY (Don't Repeat Yourself)
+- Cleaner routes - focus on business logic, not validation
+- Essential for larger APIs
+
+---
+
+### Day 20: Background Tasks & Middleware
+
+**What I Built:** Background tasks for emails, middleware for logging
+
+Background tasks run after the response. Middleware runs on every request.
+
+```python
+async def send_email(email: str):
+    await asyncio.sleep(2)
+    logging.info(f"Email sent to {email}")
+
+@app.post("/users")
+async def create_user(user: UserCreate, background_tasks: BackgroundTasks):
+    user_data = save_user(user)
+    background_tasks.add_task(send_email, user.email)
+    return user_data  # Immediate response, email sends later
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    duration = time.time() - start
+    logging.info(f"{request.method} {request.url.path} - {duration:.2f}s")
+    return response
+```
+
+**What I Learned:**
+
+_Background Tasks:_ User gets fast response, slow work (emails, cleanup) happens after.
+
+_Middleware:_ Runs automatically on every request. Good for logging, authentication, timing.
+
+**Key Takeaways:**
+
+- Background tasks keep responses fast
+- Middleware adds functionality to all routes at once
+- Production pattern for non-critical operations
+
+---
+
+### Day 21: PostgreSQL Setup
+
+**What I Built:** Installed PostgreSQL and practiced SQL
+
+Set up PostgreSQL locally and learned basic SQL commands.
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO users (email, name) VALUES ('user@example.com', 'John');
+SELECT * FROM users;
+UPDATE users SET name = 'Jane' WHERE id = 1;
+DELETE FROM users WHERE id = 1;
+```
+
+**What I Learned:**
+
+_SQL Basics:_ SELECT (read), INSERT (create), UPDATE (modify), DELETE (remove).
+
+_SERIAL:_ Auto-incrementing ID. Database assigns 1, 2, 3 automatically.
+
+_Constraints:_ UNIQUE prevents duplicates, NOT NULL requires a value.
+
+**Key Takeaways:**
+
+- SQL is the language for databases
+- Learn SQL before ORMs - helps with debugging
+- PostgreSQL is industry standard, free and powerful
+
+---
+
 ## Project Structure
 
 ```
@@ -963,10 +1132,10 @@ backend-journey/
 
 ## What's Next
 
-**Day 17-18** - Async programming, database setup with PostgreSQL, SQLAlchemy basics
+**Week 4** - SQLAlchemy ORM, connecting FastAPI to PostgreSQL, database relationships and migrations
 
-**Week 4** - Building a complete CRUD API with database integration, relationships, and migrations
+**Week 5-6** - Authentication with JWT, testing with pytest, Docker deployment
 
-The roadmap ahead: Authentication & JWT tokens, Docker containers, pytest for testing, CI/CD pipelines, and cloud deployment.
+The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 
 ---
