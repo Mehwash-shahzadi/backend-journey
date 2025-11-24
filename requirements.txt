@@ -6,3 +6,5 @@ fastapi
 uvicorn[standard]
 pydantic[email]
 httpx
+SQLAlchemy
+psycopg2-binary

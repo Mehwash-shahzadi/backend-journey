@@ -3,20 +3,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 DATABASE_URL = "postgresql://postgres:route@localhost/fastapi_db"
 
-# Create engine (connection to DB)
 engine = create_engine(DATABASE_URL)
 
-# Create session (used to talk to database)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for all models
 Base = declarative_base()
-
-
-def get_db():
-    """Provide a session to interact with the database."""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
