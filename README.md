@@ -1299,6 +1299,14 @@ _API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure
 
 ---
 
+### Day 27-28: Blog API – Final Polish & Documentation
+
+**What I Built:**
+Polished version of the Blog API from Day 25–26 with docstrings, OpenAPI docs, seed data, and environment setup.
+
+**See full documentation and project details here:**
+blog_api_final/README.md
+
 ## Week 3-4 Summary
 
 **What I Built:**
@@ -1324,19 +1332,23 @@ _API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure
 
 ## Project Structure
 
-`backend-journey/
-├── day01/ # Environment setup
+backend-journey/
+│
+├── day01/ # Environment setup & first scripts
 ├── day02/ # Modules & packages
-├── day03-04/ # OOP fundamentals
-├── day05-07/ # Dataclasses, logging, persistence
-├── day08-14/ # CLI Task Manager (v1 → final)
-├── day15/ # First FastAPI app
+├── day03-04/ # OOP fundamentals (Classes, Inheritance)
+├── day05-07/ # Dataclasses, logging, JSON persistence
+│
+├── day08-14/ # CLI Task Manager (v1 → production)
+│ └── task_manager_final/
+│
+├── day15/ # First FastAPI App
 ├── day16/ # Pydantic & validation
-├── day17/ # In-memory CRUD
+├── day17/ # In-memory CRUD API
 ├── day18/ # Async FastAPI + httpx
 ├── day19/ # Dependency Injection
 ├── day20/ # Background tasks & middleware
-├── day21/ # PostgreSQL + raw SQL
+├── day21/ # PostgreSQL + SQL practice
 │
 ├── day22/ # SQLAlchemy ORM Basics
 │ └── sqlalchemy_basics/
@@ -1345,13 +1357,13 @@ _API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure
 │ ├── crud.py
 │ └── main.py
 │
-├── day23/ # FastAPI + SQLAlchemy integration
+├── day23/ # FastAPI + SQLAlchemy Integration
 │ └── fastapi_sqlalchemy/
-│ ├── app/
-│ │ ├── main.py
-│ │ ├── database.py
-│ │ ├── models.py
-│ │ └── dependencies.py
+│ └── app/
+│ ├── main.py
+│ ├── database.py
+│ ├── models.py
+│ └── dependencies.py
 │
 ├── day24/ # Relationships & Joins
 │ └── relationships_api/
@@ -1359,66 +1371,53 @@ _API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure
 │ ├── models/
 │ └── routers/
 │
-├── day25-26/ # Complete Blog API Project (Users → Posts → Comments)
+├── day25-26/ # Blog API (Users → Posts → Comments)
 │ └── blog_api/
-│ ├── alembic/
 │ ├── app/
-│ │ ├── **init**.py
 │ │ ├── main.py
 │ │ ├── database.py
-│ │ ├── models/ # user.py, post.py, comment.py
+│ │ ├── models/ # User, Post, Comment models
 │ │ ├── schemas/ # Pydantic models
-│ │ ├── crud/ # CRUD functions
+│ │ ├── crud/ # CRUD logic
 │ │ ├── routers/ # users.py, posts.py, comments.py
 │ │ └── dependencies.py
-│ ├── alembic.ini
-│ └── requirements.txt
+│ ├── requirements.txt
+│ └── alembic.ini
 │
-├── day27-28/ # Polish & Documentation
-│ └── blog_api_final/ # Fully documented + seeding + .env
+├── day27-28/ # Blog API — Final Polish
+│ └── blog_api_final/ # Documentation + seeding + .env
+│ ├── app/
+│ ├── seed_data.py
+│ ├── .env.example
+│ └── README.md
 │
-├── day29/ # Alembic Migrations
+├── day29/ # Alembic Migrations Practice
 │ └── migrations_practice/
-│ └── alembic/
 │
-├── day30/ # Complex Queries & Filtering
+├── day30/ # Advanced Filtering & Query Building
 ├── day31/ # Transactions & Data Integrity
 ├── day32/ # Repository Pattern
 ├── day33/ # Service Layer Pattern
 ├── day34/ # Async SQLAlchemy + asyncpg
-├── day35/ # Many-to-Many (Posts ↔ Tags)
+├── day35/ # Many-to-Many Relationships (Tags System)
 │
-└── day36-42/ # E-Commerce API Project (Your Portfolio Crown Jewel!)
+└── day36-42/ # E-Commerce API (Major Portfolio Project)
 └── ecommerce_api/
-├── alembic/ # All migrations
-│ └── versions/
 ├── app/
-│ ├── **init**.py
-│ ├── main.py
-│ ├── database.py
-│ ├── core/ # config, security, utils
-│ ├── models/ # User, Product, Category, Order, OrderItem, Review, CartItem
-│ ├── schemas/ # Pydantic request/response models
-│ ├── crud/ # Raw DB operations
+│ ├── core/ # Config, security, utilities
+│ ├── models/ # User, Product, Order, etc.
+│ ├── schemas/
+│ ├── crud/
 │ ├── repositories/ # Repository pattern
-│ ├── services/ # Business logic (order placement, stock, cart checkout)
-│ ├── routers/ # Split by domain
-│ │ ├── **init**.py
-│ │ ├── auth.py
-│ │ ├── users.py
-│ │ ├── products.py
-│ │ ├── categories.py
-│ │ ├── orders.py
-│ │ ├── cart.py
-│ │ └── admin.py
-│ ├── dependencies.py
+│ ├── services/ # Business logic layer
+│ ├── routers/ # Domain-wise API routes
 │ └── utils/
-├── tests/ # Ready for pytest
-├── seed_data.py # Demo data
-├── .env.example
-├── alembic.ini
+├── tests/ # pytest-ready tests
+├── seed_data.py
 ├── requirements.txt
-└── README.md # ER diagram + full API docs
+├── alembic.ini
+├── .env.example
+└── README.md # Full API documentation + ERD
 
 ## What's Next
 
