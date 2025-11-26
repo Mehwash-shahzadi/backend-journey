@@ -1301,11 +1301,11 @@ _API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure
 
 ### Day 27-28: Blog API – Final Polish & Documentation
 
-**What I Built:**
+**What I Built:**  
 Polished version of the Blog API from Day 25–26 with docstrings, OpenAPI docs, seed data, and environment setup.
 
-**See full documentation and project details here:**
-blog_api_final/README.md
+**See full documentation and project details here:**  
+[blog_api_final README](day27-28/blog_api_final/README.md)
 
 ## Week 3-4 Summary
 
