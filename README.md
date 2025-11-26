@@ -1108,63 +1108,319 @@ _Constraints:_ UNIQUE prevents duplicates, NOT NULL requires a value.
 
 ---
 
-## Project Structure
+---
 
-## Project Structure
+### Day 22: SQLAlchemy ORM Basics
+
+**What I Built:** Replaced raw SQL with SQLAlchemy ORM
+
+Instead of writing SQL queries manually, I learned to use SQLAlchemy - a tool that lets you work with databases using Python classes. Way cleaner than string concatenation.
+
+```python
+# database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+engine = create_engine("postgresql://user:pass@localhost/fastapi_db")
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+# models.py
+from sqlalchemy import Column, Integer, String, DateTime
+from datetime import datetime
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+```
+
+**What I Learned:**
+
+_ORM:_ Object-Relational Mapping. Instead of `SELECT * FROM users`, you write `session.query(User).all()`. Database tables become Python classes.
+
+_Session:_ Like a workspace for database operations. Open it, do your work, commit changes, close it.
+
+**Key Takeaways:**
+
+- ORMs make database code more readable and maintainable
+- SQLAlchemy is Python's standard ORM - used everywhere
+- Type safety - IDE can autocomplete database fields
+
+---
+
+### Day 23: FastAPI + SQLAlchemy Integration
+
+**What I Built:** Connected FastAPI routes to real PostgreSQL database
+
+Integrated yesterday's SQLAlchemy code with FastAPI. Now the API actually saves data to PostgreSQL instead of a Python list that disappears when the server restarts.
+
+```python
+# dependencies.py
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# main.py
+@app.post("/users")
+async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = models.User(name=user.name, email=user.email, age=user.age)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+```
+
+**What I Learned:**
+
+_get_db() Dependency:_ Creates a database session for each request, automatically closes it after. Prevents connection leaks.
+
+_Session Management:_ Add (stage), commit (save), refresh (get updated data from DB).
+
+**Key Takeaways:**
+
+- Every route gets its own database session via dependency injection
+- Always close sessions to avoid connection leaks
+- This pattern is used in every production FastAPI app
+
+---
+
+### Day 24: Database Relationships
+
+**What I Built:** Added Posts table with relationships to Users
+
+Real apps have related data - users have posts, posts have comments. Learned how to model these relationships in SQLAlchemy.
+
+```python
+# models.py
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    posts = relationship("Post", back_populates="owner")
+
+class Post(Base):
+    __tablename__ = "posts"
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    content = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="posts")
+
+# Get user with all their posts
+@app.get("/users/{user_id}/posts")
+async def get_user_posts(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    return user.posts
+```
+
+**What I Learned:**
+
+_Foreign Key:_ Links tables together. `user_id` in posts table references `id` in users table.
+
+_relationship():_ SQLAlchemy magic that lets you access related data easily. `user.posts` automatically fetches all posts by that user.
+
+**Key Takeaways:**
+
+- Relationships represent real-world connections between data
+- Foreign keys maintain data integrity at database level
+- ORM relationships prevent manual join queries
+
+---
+
+### Day 25-26: Complete Blog API Project
+
+**What I Built:** Production-quality API with proper structure
+
+Combined everything from Weeks 3-4 into a real project. Built a blog API with users, posts, and comments. Organized code properly with separate folders for models, routes, and business logic.
+
+**Project Structure:**
 
 ```
-backend-journey/
-├── day01/              # Environment setup
-├── day02/              # Calculator with modules
-├── day03/              # Basic bank account
-├── day04/              # Banking with inheritance
-├── day05/              # Dataclasses & type hints
-├── day06/              # Exception handling & logging
-├── day07/              # JSON persistence
-├── day08-09/           # CLI Task Manager
-│   └── task_manager/
-├── day10-11/           # Magic Methods & Strategy Pattern
-│   └── task_manager_v2/
-├── day12-14/           # Production-Ready Task Manager
-│   └── task_manager_final/
-├── day15/              # First FastAPI App
-│   ├── first_api/
-│   │   └── main.py
-│   └── screenshots/
-│       ├── docs.png
-│       ├── hello_world.png
-│       ├── item_id.png
-│       └── search.png
-├── day16/              # Pydantic Models & Validation
-│   └── user_api/
-│       ├── main.py
-│       └── models.py
-├── day17/              # CRUD API with In-Memory Storage
-│   └── crud_api/
-│       ├── main.py
-│       └── models.py
-├── day18/              # Async Programming
-│   └── async_api/
-│       ├── main.py
-│       └── models.py
-├── day19/              # Dependency Injection
-│   └── dependency_api/
-│       ├── main.py
-│       ├── models.py
-│       └── dependency.py
-├── day20/              # Background Tasks & Middleware
-│   └── background_api/
-│       ├── main.py
-│       └── models.py
-├── day21/              # PostgreSQL Setup & SQL Practice
-│   └── postgres_practice/
-│       └── init.sql
+blog_api/
+├── app/
+│   ├── main.py
+│   ├── database.py
+│   ├── models/          # Database models
+│   │   ├── user.py
+│   │   ├── post.py
+│   │   └── comment.py
+│   ├── schemas/         # Pydantic models
+│   │   ├── user.py
+│   │   ├── post.py
+│   │   └── comment.py
+│   ├── crud/            # Database operations
+│   │   ├── user.py
+│   │   ├── post.py
+│   │   └── comment.py
+│   ├── routers/         # API endpoints
+│   │   ├── users.py
+│   │   ├── posts.py
+│   │   └── comments.py
+│   └── dependencies.py
 └── requirements.txt
 ```
 
-## What's Next
+**Features Built:**
 
-**Week 4** - SQLAlchemy ORM, connecting FastAPI to PostgreSQL, database relationships and migrations
+- Users CRUD (create, read, update, delete)
+- Posts CRUD (each post belongs to a user)
+- Comments CRUD (each comment belongs to a post)
+- Pagination: `GET /posts?skip=0&limit=10`
+- Filtering: `GET /posts?author_id=5`
+- Nested data: `GET /users/1/posts` returns user with all their posts
+
+**What I Learned:**
+
+_Project Organization:_ Separate concerns - models in one folder, routes in another, business logic in crud folder. Makes code maintainable.
+
+_Pagination:_ Don't return 10,000 records at once. Use skip/limit parameters to fetch in chunks.
+
+_API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure.
+
+**Key Takeaways:**
+
+- Good structure matters more as projects grow
+- Real APIs need pagination, filtering, sorting
+- This structure is used by production FastAPI applications
+- Demonstrates skills needed for backend interviews
+
+---
+
+## Week 3-4 Summary
+
+**What I Built:**
+
+- REST APIs with FastAPI (15+ endpoints)
+- PostgreSQL database with SQLAlchemy ORM
+- Database relationships (users, posts, comments)
+- Complete blog API with production structure
+- Pagination, filtering, async operations
+
+**Skills Gained:**
+
+- FastAPI framework mastery
+- Pydantic validation
+- Async/await programming
+- Dependency injection pattern
+- SQL and PostgreSQL
+- SQLAlchemy ORM
+- Database design and relationships
+- API architecture and best practices
+
+---
+
+## Project Structure
+
+`backend-journey/
+├── day01/ # Environment setup
+├── day02/ # Modules & packages
+├── day03-04/ # OOP fundamentals
+├── day05-07/ # Dataclasses, logging, persistence
+├── day08-14/ # CLI Task Manager (v1 → final)
+├── day15/ # First FastAPI app
+├── day16/ # Pydantic & validation
+├── day17/ # In-memory CRUD
+├── day18/ # Async FastAPI + httpx
+├── day19/ # Dependency Injection
+├── day20/ # Background tasks & middleware
+├── day21/ # PostgreSQL + raw SQL
+│
+├── day22/ # SQLAlchemy ORM Basics
+│ └── sqlalchemy_basics/
+│ ├── database.py
+│ ├── models.py
+│ ├── crud.py
+│ └── main.py
+│
+├── day23/ # FastAPI + SQLAlchemy integration
+│ └── fastapi_sqlalchemy/
+│ ├── app/
+│ │ ├── main.py
+│ │ ├── database.py
+│ │ ├── models.py
+│ │ └── dependencies.py
+│
+├── day24/ # Relationships & Joins
+│ └── relationships_api/
+│ └── app/
+│ ├── models/
+│ └── routers/
+│
+├── day25-26/ # Complete Blog API Project (Users → Posts → Comments)
+│ └── blog_api/
+│ ├── alembic/
+│ ├── app/
+│ │ ├── **init**.py
+│ │ ├── main.py
+│ │ ├── database.py
+│ │ ├── models/ # user.py, post.py, comment.py
+│ │ ├── schemas/ # Pydantic models
+│ │ ├── crud/ # CRUD functions
+│ │ ├── routers/ # users.py, posts.py, comments.py
+│ │ └── dependencies.py
+│ ├── alembic.ini
+│ └── requirements.txt
+│
+├── day27-28/ # Polish & Documentation
+│ └── blog_api_final/ # Fully documented + seeding + .env
+│
+├── day29/ # Alembic Migrations
+│ └── migrations_practice/
+│ └── alembic/
+│
+├── day30/ # Complex Queries & Filtering
+├── day31/ # Transactions & Data Integrity
+├── day32/ # Repository Pattern
+├── day33/ # Service Layer Pattern
+├── day34/ # Async SQLAlchemy + asyncpg
+├── day35/ # Many-to-Many (Posts ↔ Tags)
+│
+└── day36-42/ # E-Commerce API Project (Your Portfolio Crown Jewel!)
+└── ecommerce_api/
+├── alembic/ # All migrations
+│ └── versions/
+├── app/
+│ ├── **init**.py
+│ ├── main.py
+│ ├── database.py
+│ ├── core/ # config, security, utils
+│ ├── models/ # User, Product, Category, Order, OrderItem, Review, CartItem
+│ ├── schemas/ # Pydantic request/response models
+│ ├── crud/ # Raw DB operations
+│ ├── repositories/ # Repository pattern
+│ ├── services/ # Business logic (order placement, stock, cart checkout)
+│ ├── routers/ # Split by domain
+│ │ ├── **init**.py
+│ │ ├── auth.py
+│ │ ├── users.py
+│ │ ├── products.py
+│ │ ├── categories.py
+│ │ ├── orders.py
+│ │ ├── cart.py
+│ │ └── admin.py
+│ ├── dependencies.py
+│ └── utils/
+├── tests/ # Ready for pytest
+├── seed_data.py # Demo data
+├── .env.example
+├── alembic.ini
+├── requirements.txt
+└── README.md # ER diagram + full API docs
+
+## What's Next
 
 **Week 5-6** - Authentication with JWT, testing with pytest, Docker deployment
 
