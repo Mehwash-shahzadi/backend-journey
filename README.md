@@ -1242,60 +1242,11 @@ _relationship():_ SQLAlchemy magic that lets you access related data easily. `us
 
 ### Day 25-26: Complete Blog API Project
 
-**What I Built:** Production-quality API with proper structure
+**What I Built:**  
+Production-quality API with users, posts, and comments. Organized code with separate folders for models, routes, and CRUD logic.
 
-Combined everything from Weeks 3-4 into a real project. Built a blog API with users, posts, and comments. Organized code properly with separate folders for models, routes, and business logic.
-
-**Project Structure:**
-
-```
-blog_api/
-├── app/
-│   ├── main.py
-│   ├── database.py
-│   ├── models/          # Database models
-│   │   ├── user.py
-│   │   ├── post.py
-│   │   └── comment.py
-│   ├── schemas/         # Pydantic models
-│   │   ├── user.py
-│   │   ├── post.py
-│   │   └── comment.py
-│   ├── crud/            # Database operations
-│   │   ├── user.py
-│   │   ├── post.py
-│   │   └── comment.py
-│   ├── routers/         # API endpoints
-│   │   ├── users.py
-│   │   ├── posts.py
-│   │   └── comments.py
-│   └── dependencies.py
-└── requirements.txt
-```
-
-**Features Built:**
-
-- Users CRUD (create, read, update, delete)
-- Posts CRUD (each post belongs to a user)
-- Comments CRUD (each comment belongs to a post)
-- Pagination: `GET /posts?skip=0&limit=10`
-- Filtering: `GET /posts?author_id=5`
-- Nested data: `GET /users/1/posts` returns user with all their posts
-
-**What I Learned:**
-
-_Project Organization:_ Separate concerns - models in one folder, routes in another, business logic in crud folder. Makes code maintainable.
-
-_Pagination:_ Don't return 10,000 records at once. Use skip/limit parameters to fetch in chunks.
-
-_API Design:_ Consistent naming, proper HTTP methods, logical endpoint structure.
-
-**Key Takeaways:**
-
-- Good structure matters more as projects grow
-- Real APIs need pagination, filtering, sorting
-- This structure is used by production FastAPI applications
-- Demonstrates skills needed for backend interviews
+**See full documentation and project details here:**  
+[blog_api README](day25-26/blog_api/README.md)
 
 ---
 
