@@ -1332,92 +1332,55 @@ blog_api_final/README.md
 
 ## Project Structure
 
+```
 backend-journey/
-│
-├── day01/ # Environment setup & first scripts
-├── day02/ # Modules & packages
-├── day03-04/ # OOP fundamentals (Classes, Inheritance)
-├── day05-07/ # Dataclasses, logging, JSON persistence
-│
-├── day08-14/ # CLI Task Manager (v1 → production)
-│ └── task_manager_final/
-│
-├── day15/ # First FastAPI App
-├── day16/ # Pydantic & validation
-├── day17/ # In-memory CRUD API
-├── day18/ # Async FastAPI + httpx
-├── day19/ # Dependency Injection
-├── day20/ # Background tasks & middleware
-├── day21/ # PostgreSQL + SQL practice
-│
-├── day22/ # SQLAlchemy ORM Basics
-│ └── sqlalchemy_basics/
-│ ├── database.py
-│ ├── models.py
-│ ├── crud.py
-│ └── main.py
-│
-├── day23/ # FastAPI + SQLAlchemy Integration
-│ └── fastapi_sqlalchemy/
-│ └── app/
-│ ├── main.py
-│ ├── database.py
-│ ├── models.py
-│ └── dependencies.py
-│
-├── day24/ # Relationships & Joins
-│ └── relationships_api/
-│ └── app/
-│ ├── models/
-│ └── routers/
-│
-├── day25-26/ # Blog API (Users → Posts → Comments)
-│ └── blog_api/
-│ ├── app/
-│ │ ├── main.py
-│ │ ├── database.py
-│ │ ├── models/ # User, Post, Comment models
-│ │ ├── schemas/ # Pydantic models
-│ │ ├── crud/ # CRUD logic
-│ │ ├── routers/ # users.py, posts.py, comments.py
-│ │ └── dependencies.py
-│ ├── requirements.txt
-│ └── alembic.ini
-│
-├── day27-28/ # Blog API — Final Polish
-│ └── blog_api_final/ # Documentation + seeding + .env
-│ ├── app/
-│ ├── seed_data.py
-│ ├── .env.example
-│ └── README.md
-│
-├── day29/ # Alembic Migrations Practice
-│ └── migrations_practice/
-│
-├── day30/ # Advanced Filtering & Query Building
-├── day31/ # Transactions & Data Integrity
-├── day32/ # Repository Pattern
-├── day33/ # Service Layer Pattern
-├── day34/ # Async SQLAlchemy + asyncpg
-├── day35/ # Many-to-Many Relationships (Tags System)
-│
-└── day36-42/ # E-Commerce API (Major Portfolio Project)
-└── ecommerce_api/
-├── app/
-│ ├── core/ # Config, security, utilities
-│ ├── models/ # User, Product, Order, etc.
-│ ├── schemas/
-│ ├── crud/
-│ ├── repositories/ # Repository pattern
-│ ├── services/ # Business logic layer
-│ ├── routers/ # Domain-wise API routes
-│ └── utils/
-├── tests/ # pytest-ready tests
-├── seed_data.py
-├── requirements.txt
-├── alembic.ini
-├── .env.example
-└── README.md # Full API documentation + ERD
+├── day01/              # Environment setup
+├── day02/              # Calculator with modules
+├── day03/              # Basic bank account
+├── day04/              # Banking with inheritance
+├── day05/              # Dataclasses & type hints
+├── day06/              # Exception handling & logging
+├── day07/              # JSON persistence
+├── day08-09/           # CLI Task Manager
+│   └── task_manager/
+├── day10-11/           # Magic Methods & Strategy Pattern
+│   └── task_manager_v2/
+├── day12-14/           # Production-Ready Task Manager
+│   └── task_manager_final/
+├── day15/              # First FastAPI App
+│   ├── first_api/
+│   │   └── main.py
+│   └── screenshots/
+│       ├── docs.png
+│       ├── hello_world.png
+│       ├── item_id.png
+│       └── search.png
+├── day16/              # Pydantic Models & Validation
+│   └── user_api/
+│       ├── main.py
+│       └── models.py
+├── day17/              # CRUD API with In-Memory Storage
+│   └── crud_api/
+│       ├── main.py
+│       └── models.py
+├── day18/              # Async Programming
+│   └── async_api/
+│       ├── main.py
+│       └── models.py
+├── day19/              # Dependency Injection
+│   └── dependency_api/
+│       ├── main.py
+│       ├── models.py
+│       └── dependency.py
+├── day20/              # Background Tasks & Middleware
+│   └── background_api/
+│       ├── main.py
+│       └── models.py
+├── day21/              # PostgreSQL Setup & SQL Practice
+│   └── postgres_practice/
+│       └── init.sql
+└── requirements.txt
+```
 
 ## What's Next
 
