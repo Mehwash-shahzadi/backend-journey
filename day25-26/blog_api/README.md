@@ -21,7 +21,7 @@ A production-ready backend API for a blogging platform built with FastAPI. This 
 Before getting started, make sure you have:
 
 - Python 3.10 or higher installed
-- SQLite (included by default) or another SQL database
+- PostgreSQL
 - An API client like Postman or Insomnia for testing (optional)
 
 ---
