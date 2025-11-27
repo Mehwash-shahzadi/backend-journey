@@ -1255,29 +1255,101 @@ Production-quality API with users, posts, and comments. Organized code with sepa
 **What I Built:**  
 Polished version of the Blog API from Day 25–26 with docstrings, OpenAPI docs, seed data, and environment setup.
 
+Spent two days making the blog API production-ready. Added comprehensive documentation, environment variable setup, and a seeding script to quickly populate test data.
+
+**Key Improvements:**
+
+- Detailed docstrings for every function
+- Enhanced OpenAPI docs with examples
+- Environment variable configuration (.env file)
+- Database seeding script for testing
+- Professional README with full API documentation
+  **What I Learned:**
+
+_Good Documentation:_ Makes your code usable by others (and your future self). Includes setup instructions, API examples, and error handling.
+
+_Environment Variables:_ Never hardcode passwords or API keys. Use `.env` files for configuration.
+
+_Seeding Scripts:_ Populate database with test data for development and demos.
+
+**Key Takeaways:**
+
+- Documentation quality separates junior from mid-level developers
+- FastAPI's auto-generated docs get better with proper descriptions
+- Environment configuration makes deployment easier
+
 **See full documentation and project details here:**  
 [blog_api_final README](day27-28/blog_api_final/README.md)
 
-## Week 3-4 Summary
+## Week 3-4 Complete
 
-**What I Built:**
+**What I Built These Two Weeks:**
 
-- REST APIs with FastAPI (15+ endpoints)
-- PostgreSQL database with SQLAlchemy ORM
-- Database relationships (users, posts, comments)
-- Complete blog API with production structure
-- Pagination, filtering, async operations
+- REST APIs with FastAPI (20+ endpoints)
+- PostgreSQL database with relationships
+- Complete blog API (users, posts, comments)
+- Async operations and background tasks
+- Production-ready project structure
+- Comprehensive documentation
 
-**Skills Gained:**
+**Skills Mastered:**
 
-- FastAPI framework mastery
-- Pydantic validation
-- Async/await programming
-- Dependency injection pattern
-- SQL and PostgreSQL
+- FastAPI framework
 - SQLAlchemy ORM
 - Database design and relationships
-- API architecture and best practices
+- API architecture
+- Professional documentation
+- Environment configuration
+
+This blog API is now portfolio-ready and demonstrates real-world backend engineering skills.
+
+---
+
+---
+
+## Week 5: Authentication & Security
+
+### Day 29: Database Migrations with Alembic
+
+**What I Built:** Learned to manage database schema changes with Alembic
+
+Today was about version control for databases. Alembic tracks changes to your database schema - when you add columns, create tables, or modify structures. It creates migration files that can be applied to any database, keeping everyone in sync.
+
+**Why Migrations Matter:**
+
+Without migrations, you'd manually run SQL commands on every database (development, staging, production). Miss one and things break. With migrations, changes are tracked in code and applied consistently everywhere.
+
+**Basic Workflow:**
+
+```bash
+# 1. Change your SQLAlchemy model (add a field)
+# 2. Generate migration file
+alembic revision --autogenerate -m "Add bio to users"
+
+# 3. Apply to database
+alembic upgrade head
+
+# 4. Rollback if needed
+alembic downgrade -1
+```
+
+**What I Learned:**
+
+_Migrations:_ Like Git commits for your database. Each migration file describes what changed.
+
+_Autogenerate:_ Alembic compares your models to the current database and creates migration code automatically.
+
+_Upgrade/Downgrade:_ Apply changes forward or roll them back. Critical for fixing mistakes in production.
+
+**Key Takeaways:**
+
+- Never modify production databases manually
+- Migrations keep teams synchronized on schema changes
+- Always test migrations on development databases first
+- Version control migration files with Git
+
+**Detailed Migration Guide:**
+View [Complete Alembic Tutorial](day29/migrations_practice/README.md) for step-by-step commands and troubleshooting.
 
 ---
 
@@ -1329,8 +1401,53 @@ backend-journey/
 │       └── models.py
 ├── day21/              # PostgreSQL Setup & SQL Practice
 │   └── postgres_practice/
-│       └── init.sql
+│       └── setup.sql
+├── day22/              # SQLAlchemy ORM Basics
+│   └── sqlalchemy_basics/
+│       ├── database.py
+│       ├── models.py
+│       ├── crud.py
+│       └── main.py
+├── day23/              # FastAPI + SQLAlchemy Integration
+│   └── fastapi_sqlalchemy/
+│       ├── database.py
+│       ├── models.py
+│       ├── dependencies.py
+│       └── main.py
+├── day24/              # Database Relationships
+│   └── relationships_api/
+│       ├── database.py
+│       ├── models.py
+│       └── main.py
+├── day25-26/           # Complete Blog API Project
+│   └── blog_api/
+│       ├── app/
+│       │   ├── main.py
+│       │   ├── database.py
+│       │   ├── models/
+│       │   ├── schemas/
+│       │   ├── crud/
+│       │   ├── routers/
+│       │   └── dependencies.py
+│       └── README.md
+├── day27-28/           # Documentation & Polish
+│   └── blog_api_final/
+│       ├── app/
+│       ├── README.md       # Complete project documentation
+│       ├── .env.example
+│       └── seed_data.py
+├── day29/              # Alembic Database Migrations
+│   └── migrations_practice/
+│       ├── app/
+│       │   ├── database.py
+│       │   └── models/
+│       ├── alembic/
+│       │   ├── env.py
+│       │   └── versions/
+│       ├── alembic.ini
+│       └── README.md       # Complete migration guide
 └── requirements.txt
+
 ```
 
 ## What's Next
