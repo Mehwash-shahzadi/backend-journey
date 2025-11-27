@@ -1307,7 +1307,7 @@ This blog API is now portfolio-ready and demonstrates real-world backend enginee
 
 ---
 
-## Week 5: Authentication & Security
+### WEEK 5-6: Database Layer & ORM Mastery
 
 ### Day 29: Database Migrations with Alembic
 
@@ -1452,7 +1452,7 @@ backend-journey/
 
 ## What's Next
 
-**Week 5-6** - Authentication with JWT, testing with pytest, Docker deployment
+**week6-7** Modular Architecture
 
 The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 
