@@ -94,7 +94,7 @@ GET /posts/?search=python
 Get all posts by a specific author:
 
 ```
-GET /posts/?author=john
+GET /posts/?author=mehwash
 ```
 
 ### Sort Results
@@ -134,7 +134,7 @@ GET /posts/?author=john&search=api&sort=created_at&order=desc
 | Parameter   | Type   | Description                 | Example                |
 | ----------- | ------ | --------------------------- | ---------------------- |
 | `search`    | string | Search in title and content | `search=python`        |
-| `author`    | string | Filter by author name       | `author=john`          |
+| `author`    | string | Filter by author name       | `author=mehwash`       |
 | `from_date` | date   | Start date for range filter | `from_date=2025-01-01` |
 | `to_date`   | date   | End date for range filter   | `to_date=2025-12-31`   |
 | `tags`      | string | Comma-separated tag names   | `tags=python,fastapi`  |
