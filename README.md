@@ -1353,6 +1353,37 @@ View [Complete Alembic Tutorial](day29/migrations_practice/README.md) for step-b
 
 ---
 
+### Day 30: Advanced Queries and Filtering
+
+**What I Built:** Search and filtering system for blog posts
+
+Added advanced querying - search by text, filter by author/date/tags, and sort results. Implemented database indexes for fast queries.
+
+```bash
+# Example queries
+GET /posts/?search=python
+GET /posts/?author=john&sort=created_at&order=desc
+GET /posts/?from_date=2025-01-01&to_date=2025-12-31
+GET /posts/?tags=python,fastapi
+```
+
+**What I Learned:**
+
+_Dynamic Filtering:_ Build queries based on provided parameters using SQLAlchemy's filter chaining.
+
+_Database Indexes:_ Speed up queries significantly on frequently searched columns.
+
+**Key Takeaways:**
+
+- SQLAlchemy allows dynamic query building
+- Indexes are critical for production performance
+- Support multiple optional filters for better UX
+
+**Complete Guide:**
+[View Advanced Filtering Tutorial](day30/advanced_queries/README.md)
+
+---
+
 ## Project Structure
 
 ```
@@ -1446,6 +1477,16 @@ backend-journey/
 │       │   └── versions/
 │       ├── alembic.ini
 │       └── README.md       # Complete migration guide
+├── day30/              # Advanced Queries & Filtering
+│   └── advanced_queries/
+│       ├── app/
+│       │   ├── main.py
+│       │   ├── models.py
+│       │   ├── crud.py
+│       │   └── schemas.py
+│       ├── alembic/
+│       ├── seed.py
+│       └── README.md       # Complete query guide
 └── requirements.txt
 
 ```
