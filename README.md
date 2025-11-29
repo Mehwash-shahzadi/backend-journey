@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 2 complete. Week 3 in progress - building REST APIs with FastAPI and PostgreSQL. Let's see where this goes.
+This repo is my public accountability. Week 4 complete. Week 5 in progress.
 
 ## Quick Start
 
@@ -1362,7 +1362,7 @@ Added advanced querying - search by text, filter by author/date/tags, and sort r
 ```bash
 # Example queries
 GET /posts/?search=python
-GET /posts/?author=john&sort=created_at&order=desc
+GET /posts/?author=mehwash&sort=created_at&order=desc
 GET /posts/?from_date=2025-01-01&to_date=2025-12-31
 GET /posts/?tags=python,fastapi
 ```
@@ -1381,6 +1381,48 @@ _Database Indexes:_ Speed up queries significantly on frequently searched column
 
 **Complete Guide:**
 [View Advanced Filtering Tutorial](day30/advanced_queries/README.md)
+
+---
+
+### Day 31: Database Transactions
+
+**What I Built:** Money transfer system demonstrating atomic operations
+
+Built a transfer system to learn transactions - operations that must complete fully or not at all. If transferring money between users fails at any step, everything rolls back automatically.
+
+**Key Concepts:**
+
+```python
+# Transaction example
+try:
+    sender.balance -= amount
+    receiver.balance += amount
+    db.commit()  # Save both changes
+except Exception:
+    db.rollback()  # Undo everything if anything fails
+```
+
+**What I Learned:**
+
+_Atomicity:_ All-or-nothing operations. Either both balances update or neither does. Prevents partial updates that corrupt data.
+
+_Commit/Rollback:_ `commit()` saves changes, `rollback()` undoes them. Critical for maintaining data consistency.
+
+_Unique Constraints:_ Database-level enforcement prevents duplicate emails or IDs automatically.
+
+**Test Scenarios:**
+
+- Successful transfer - both balances update
+- Insufficient funds - rollback, no changes
+- User not found - rollback, no changes
+- Duplicate email - database prevents insertion
+
+**Key Takeaways:**
+
+- Transactions prevent data corruption in multi-step operations
+- Always wrap related database operations in transactions
+- Let database rollback on errors automatically
+- Critical for banking, e-commerce, inventory systems
 
 ---
 
@@ -1487,13 +1529,22 @@ backend-journey/
 │       ├── alembic/
 │       ├── seed.py
 │       └── README.md       # Complete query guide
+├── day31/              # Database Transactions
+│   └── transactions_demo/
+│       ├── database.py
+│       ├── models.py
+│       ├── schemas.py
+│       ├── crud.py
+│       ├── main.py
+│       ├── seed.py
+│       └── test_transaction.py
 └── requirements.txt
 
 ```
 
 ## What's Next
 
-**week6-7** Modular Architecture
+This repo is my public accountability. Week 4 complete. Week 5 in progress - authentication and security coming up. Let's see where this goes.
 
 The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 
