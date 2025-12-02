@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from .database import Base
+from database import Base
 
 post_tags = Table(
     'post_tags',
@@ -18,11 +18,11 @@ class Post(Base):
     content = Column(Text)
     author = Column(String(100), index=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
-    tags = relationship("Tag", secondary=post_tags, back_populates="posts")
+    tags = relationship("Tag", secondary=post_tags, back_populates="posts", lazy="selectin")
 
 class Tag(Base):
     __tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), unique=True, index=True)
-    posts = relationship("Post", secondary=post_tags, back_populates="tags")
+    posts = relationship("Post", secondary=post_tags, back_populates="tags", lazy="selectin")

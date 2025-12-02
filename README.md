@@ -1426,6 +1426,121 @@ _Unique Constraints:_ Database-level enforcement prevents duplicate emails or ID
 
 ---
 
+### Day 34: Async SQLAlchemy
+
+**What I Built:** Converted entire database layer from synchronous to asynchronous operations
+
+Transformed the application to handle database operations asynchronously. Instead of blocking while waiting for database responses, the server can now handle thousands of concurrent requests efficiently.
+
+**Key Concepts:**
+
+```python
+# Sync (blocks server)
+def get_users(db: Session):
+    return db.query(User).all()  # Server waits here
+
+# Async (non-blocking)
+async def get_users(db: AsyncSession):
+    result = await db.execute(select(User))  # Server handles other requests
+    return result.scalars().all()
+```
+
+**What I Learned:**
+
+_async/await:_ `async def` marks functions as pausable. `await` tells Python "pause here, handle other requests, come back when ready."
+
+_AsyncSession:_ Replaces regular Session for non-blocking database operations. Uses `asyncpg` driver instead of `psycopg2`.
+
+_Contagious Pattern:_ If repository is async → service must be async → router must be async. The entire chain must support async.
+
+_Performance Gain:_ One server can handle 100 concurrent requests in 2-3 seconds vs 200 seconds with sync code.
+
+**Key Changes:**
+
+```python
+# Database setup
+create_async_engine()           # Instead of create_engine()
+AsyncSession                    # Instead of Session
+postgresql+asyncpg://           # Instead of postgresql://
+
+# Query execution
+await db.execute(select(User))  # Instead of db.query(User)
+await db.commit()               # Instead of db.commit()
+await db.refresh(user)          # Instead of db.refresh(user)
+```
+
+**Key Takeaways:**
+
+- Async dramatically improves performance for I/O-bound operations (database, APIs, files)
+- Use `await` before any operation that talks to database or external services
+- Every function in the call chain must be async (router → service → repository)
+- Essential for high-traffic applications with hundreds of concurrent users
+
+---
+
+### Day 35: Many-to-Many Relationships
+
+**What I Built:** Posts and Tags system with many-to-many relationship
+
+Implemented a blog-style system where posts can have multiple tags and tags can belong to multiple posts. This required an association table to manage the relationship.
+
+**Key Concepts:**
+
+```python
+# Association table
+post_tags = Table(
+    'post_tags',
+    Column('post_id', Integer, ForeignKey('posts.id')),
+    Column('tag_id', Integer, ForeignKey('tags.id'))
+)
+
+# Models with relationship
+class Post(Base):
+    tags = relationship("Tag", secondary=post_tags, back_populates="posts", lazy="selectin")
+
+class Tag(Base):
+    posts = relationship("Post", secondary=post_tags, back_populates="tags", lazy="selectin")
+```
+
+**What I Learned:**
+
+_Association Table:_ Junction table that connects two tables in many-to-many relationships. Contains only foreign keys, no primary key of its own.
+
+_secondary Parameter:_ Tells SQLAlchemy which table manages the relationship. Allows accessing `post.tags` and `tag.posts` directly.
+
+_back_populates:_ Creates bidirectional relationship. Can navigate from Post to Tags and Tags to Posts.
+
+_lazy="selectin":_ Critical for async! Eagerly loads relationships automatically, preventing "MissingGreenlet" errors in async code.
+
+**Async-Specific Challenge:**
+
+```python
+# Problem: Lazy loading doesn't work in async
+result = await db.execute(select(Post))
+posts = result.scalars().all()
+# posts.tags causes error - relationship not loaded!
+
+# Solution: Use lazy="selectin" in model
+lazy="selectin"  # Auto-loads relationships in async
+```
+
+**API Endpoints Built:**
+
+- `POST /tags` - Create new tag
+- `POST /posts/{id}/tags` - Add existing tag to post
+- `GET /tags/{id}/posts` - Get all posts with specific tag
+- `GET /posts` - List posts with their tags
+- `POST /posts` - Create new post
+
+**Key Takeaways:**
+
+- Many-to-many requires three tables: two entity tables + one association table
+- Always use `lazy="selectin"` for relationships in async SQLAlchemy
+- Association tables make complex relationships simple to query
+- Essential pattern for: products↔categories, users↔groups, students↔courses
+
+---
+
 ## Project Structure
 
 ```
