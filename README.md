@@ -1541,6 +1541,51 @@ lazy="selectin"  # Auto-loads relationships in async
 
 ---
 
+### Day 36-38: E-Commerce API
+
+**What I Built:** Complete e-commerce backend with production patterns
+
+Built a full online store backend demonstrating complex relationships and business logic.
+
+**Core Features:**
+
+- Product catalog with categories (many-to-many)
+- Order system with stock validation
+- Atomic transactions (all-or-nothing)
+- Price snapshots for order history
+- Admin/customer roles
+
+**Order Flow:**
+
+```
+Validate → Check Stock → Calculate → Reduce Stock →
+Create Order → Rollback if Fails
+```
+
+**Architecture:**
+
+- Repository pattern (data access)
+- Service layer (business logic)
+- Async SQLAlchemy
+- Alembic migrations
+
+**What I Learned:**
+
+_Repository Pattern:_ Separates database code from business logic. Makes testing easier.
+
+_Service Layer:_ All business rules in one place. Handles validation and transactions.
+
+_Atomic Transactions:_ Multiple operations succeed together or fail together. Critical for orders.
+
+**Key Takeaways:**
+
+- Large projects need clear architecture
+- Transactions prevent data corruption
+- Many-to-many needs association tables
+- Real apps need careful validation
+
+[View Complete Documentation](day36-38/ecommerce_api/README.md)
+
 ## Project Structure
 
 ```
@@ -1653,6 +1698,22 @@ backend-journey/
 │       ├── main.py
 │       ├── seed.py
 │       └── test_transaction.py
+├── day36-38/           # E-Commerce API Project
+│   ├── __init__.py
+│   └── ecommerce_api/
+│       ├── app/
+│       │   ├── __init__.py
+│       │   ├── api/
+│       │   ├── core/
+│       │   ├── database/
+│       │   ├── models/
+│       │   ├── repositories/
+│       │   ├── schemas/
+│       │   ├── services/
+│       │   └── main.py
+│       ├── alembic/
+│       ├── create_admin.py
+│       └── README.md
 └── requirements.txt
 
 ```

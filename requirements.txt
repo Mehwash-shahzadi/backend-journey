@@ -10,3 +10,6 @@ SQLAlchemy
 psycopg2-binary
 alembic
 asyncpg
+jose
+passlib
+jwt
