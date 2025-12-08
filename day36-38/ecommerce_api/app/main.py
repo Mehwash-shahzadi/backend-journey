@@ -1,9 +1,3 @@
-"""
-FastAPI application entry point.
-
-Sets up the FastAPI app with routes, lifespan events, and database initialization.
-"""
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
@@ -43,7 +37,7 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app with lifespan
 app = FastAPI(
     title="E-Commerce API",
-    description="Days 36-38 Portfolio Project – 90-Day Backend Engineering Journey",
+    description="Days 36-38 Portfolio Project  90-Day Backend Engineering Journey",
     version="1.0.0",
     lifespan=lifespan,
 )

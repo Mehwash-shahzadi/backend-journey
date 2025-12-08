@@ -22,7 +22,7 @@ class UserService:
         if existing_user:
             raise ValueError("Email already exists")
 
-        # Auto-generate username (optional)
+        # Auto-generate username 
         username = getattr(data, "username", None) or data.name.lower().replace(" ", "_")
 
         # Create user in repository
@@ -33,7 +33,6 @@ class UserService:
         user = self.user_repo.get_by_id(user_id)
         if not user:
             raise ValueError("User not found")
-        # Could set is_active = False here if model has field
         return user
 
     def get_user_with_posts(self, user_id: int):

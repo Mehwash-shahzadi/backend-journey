@@ -1,10 +1,3 @@
-"""
-User model.
-
-Represents a user in the e-commerce system.
-Users can be customers or admins, and can place multiple orders.
-"""
-
 from typing import TYPE_CHECKING
 from datetime import datetime
 from sqlalchemy import String, func

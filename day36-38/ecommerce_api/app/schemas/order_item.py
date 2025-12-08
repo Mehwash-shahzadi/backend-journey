@@ -1,11 +1,3 @@
-"""
-OrderItem schemas for order line items.
-
-Schemas:
-    - OrderItemCreate: Input schema for creating an order item (used in OrderCreate).
-    - OrderItemResponse: Output schema for returning order item data (GET).
-"""
-
 from decimal import Decimal
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -17,9 +9,6 @@ class OrderItemCreate(BaseModel):
     Attributes:
         product_id: ID of the product to order.
         quantity: Quantity of the product (must be > 0).
-
-    Example:
-        >>> item = OrderItemCreate(product_id=1, quantity=2)
     """
 
     product_id: int = Field(..., gt=0, examples=[1])
@@ -38,14 +27,6 @@ class OrderItemResponse(BaseModel):
         product_id: ID of the ordered product.
         quantity: Quantity ordered.
         price_at_purchase: Price snapshot at purchase time.
-
-    Example:
-        >>> item = OrderItemResponse(
-        ...     id=1,
-        ...     product_id=1,
-        ...     quantity=2,
-        ...     price_at_purchase=Decimal("999.99")
-        ... )
     """
 
     id: int

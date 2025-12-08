@@ -1,9 +1,3 @@
-"""
-Product repository for product-specific database operations.
-
-Includes special methods for preloading categories.
-"""
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload

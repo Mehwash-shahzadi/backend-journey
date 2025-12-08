@@ -1,9 +1,3 @@
-"""
-Pydantic schemas package.
-
-Re-exports all schemas for convenient importing.
-"""
-
 from .user import UserCreate, UserUpdate, UserResponse
 from .category import CategoryCreate, CategoryUpdate, CategoryResponse
 from .product import ProductCreate, ProductUpdate, ProductResponse

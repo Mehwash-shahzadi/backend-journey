@@ -1,10 +1,3 @@
-"""
-Order model.
-
-Represents orders placed by users in the e-commerce system.
-Orders contain multiple OrderItems and track order status and total.
-"""
-
 from typing import TYPE_CHECKING
 from datetime import datetime
 from decimal import Decimal
@@ -37,23 +30,20 @@ class Order(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        index=True,
-    )
+        index=True,)
+    
     total: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     status: Mapped[str] = mapped_column(
         String(50),
-        default="pending",
-    )
+        default="pending",)
     created_at: Mapped[datetime] = mapped_column(
-        insert_default=func.now()
-    )
+        insert_default=func.now())
 
     # Relationships
     user: Mapped["User"] = relationship(back_populates="orders")
     items: Mapped[list["OrderItem"]] = relationship(
         back_populates="order",
-        cascade="all, delete-orphan",
-    )
+        cascade="all, delete-orphan",)
 
     def __repr__(self) -> str:
         """Return a string representation of the Order."""

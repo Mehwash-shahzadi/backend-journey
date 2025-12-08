@@ -1,10 +1,3 @@
-"""
-API v1 routes for the e-commerce system.
-
-Includes routes for categories, products, and orders.
-All routes use the service layer for business logic.
-"""
-
 from decimal import Decimal
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession

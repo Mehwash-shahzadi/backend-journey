@@ -1,12 +1,3 @@
-"""
-Order schemas for order management.
-
-Schemas:
-    - OrderItemCreate: Input schema for order items (nested in OrderCreate).
-    - OrderCreate: Input schema for creating a new order (POST).
-    - OrderResponse: Output schema for returning order data with items (GET).
-"""
-
 from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel, Field, ConfigDict
@@ -22,13 +13,6 @@ class OrderCreate(BaseModel):
     Attributes:
         items: List of order items to include in the order.
 
-    Example:
-        >>> order = OrderCreate(
-        ...     items=[
-        ...         OrderItemCreate(product_id=1, quantity=2),
-        ...         OrderItemCreate(product_id=2, quantity=1)
-        ...     ]
-        ... )
     """
 
     items: list[OrderItemCreate] = Field(
@@ -54,23 +38,6 @@ class OrderResponse(BaseModel):
         status: Order status (pending, paid, shipped, delivered, cancelled).
         created_at: Timestamp of order creation.
         items: List of order items in the order.
-
-    Example:
-        >>> order = OrderResponse(
-        ...     id=1,
-        ...     user_id=1,
-        ...     total=Decimal("1999.97"),
-        ...     status="pending",
-        ...     created_at=datetime.now(),
-        ...     items=[
-        ...         OrderItemResponse(
-        ...             id=1,
-        ...             product_id=1,
-        ...             quantity=2,
-        ...             price_at_purchase=Decimal("999.99")
-        ...         )
-        ...     ]
-        ... )
     """
 
     id: int

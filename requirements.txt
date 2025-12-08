@@ -13,3 +13,5 @@ asyncpg
 jose
 passlib
 jwt
+pydantic-settings
+python-dotenv

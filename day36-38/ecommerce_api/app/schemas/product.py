@@ -1,12 +1,3 @@
-"""
-Product schemas for product management.
-
-Schemas:
-    - ProductCreate: Input schema for creating a new product (POST).
-    - ProductUpdate: Input schema for updating product information (PUT).
-    - ProductResponse: Output schema for returning product data with categories (GET).
-"""
-
 from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel, Field, ConfigDict
@@ -22,14 +13,6 @@ class ProductCreate(BaseModel):
         price: Product price (decimal with 2 decimals).
         stock: Initial stock quantity (defaults to 0).
         category_ids: List of category IDs to associate with the product.
-
-    Example:
-        >>> product = ProductCreate(
-        ...     name="Laptop",
-        ...     price=Decimal("999.99"),
-        ...     stock=10,
-        ...     category_ids=[1, 2]
-        ... )
     """
 
     name: str = Field(..., min_length=1, examples=["Laptop"])
@@ -50,8 +33,7 @@ class ProductUpdate(BaseModel):
         stock: Stock quantity (optional).
         category_ids: List of category IDs (optional).
 
-    Example:
-        >>> update = ProductUpdate(price=Decimal("899.99"), stock=5)
+
     """
 
     name: str | None = Field(None, min_length=1, examples=["Laptop Pro"])
@@ -71,16 +53,6 @@ class ProductResponse(BaseModel):
         stock: Current stock quantity.
         created_at: Timestamp of product creation.
         categories: List of associated categories.
-
-    Example:
-        >>> product = ProductResponse(
-        ...     id=1,
-        ...     name="Laptop",
-        ...     price=Decimal("999.99"),
-        ...     stock=10,
-        ...     created_at=datetime.now(),
-        ...     categories=[CategoryResponse(id=1, name="Electronics", description="...")]
-        ... )
     """
 
     id: int
