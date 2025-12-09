@@ -14,9 +14,6 @@ engine = create_async_engine(
 
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
 
 #export Base so models can import it
-__all__ = ["Base", "engine", "get_db"]
+__all__ = ["Base", "engine",]

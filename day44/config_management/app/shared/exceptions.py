@@ -1,4 +1,3 @@
-# app/shared/exceptions.py
 from fastapi import HTTPException, status
 
 class NotFoundException(HTTPException):

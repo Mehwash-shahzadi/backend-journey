@@ -15,3 +15,5 @@ passlib
 jwt
 pydantic-settings
 python-dotenv
+passlib[bcrypt]
+pytest

@@ -1678,6 +1678,78 @@ _12-Factor App:_ Store config in environment, not code. Industry standard for de
 
 ---
 
+### Day 45: Password Hashing & User Authentication
+
+**What I Built:** Secure user registration and login with bcrypt password hashing
+
+Implemented proper password security - passwords are now hashed before saving to the database. Users can register and login safely.
+
+**Security Implementation:**
+
+```python
+# app/shared/security.py
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    """Hash password using bcrypt"""
+    return pwd_context.hash(password)
+
+def verify_password(plain: str, hashed: str) -> bool:
+    """Verify password against hash"""
+    return pwd_context.verify(plain, hashed)
+```
+
+**New Endpoints:**
+
+```
+POST /users/register    Register new user (hashes password)
+POST /users/login       Login user (verifies password)
+```
+
+**Registration Example:**
+
+```json
+POST /users/register
+{
+  "email": "user@example.com",
+  "password": "secure123",
+  "name": "John Doe"
+}
+
+Response: User created (password saved as hash)
+```
+
+**Login Example:**
+
+```json
+POST /users/login
+{
+  "email": "user@example.com",
+  "password": "secure123"
+}
+
+Response: Login successful
+```
+
+**What I Learned:**
+
+_Password Hashing:_ Never store plain passwords. Hash them with bcrypt before saving. Even if database is compromised, passwords stay safe.
+
+_Bcrypt:_ Intentionally slow algorithm. Makes brute-force attacks impractical. Each hash takes ~0.3 seconds.
+
+_Verification:_ Use `verify_password()` to check login. Never compare passwords directly.
+
+**Key Takeaways:**
+
+- Plain passwords in database = critical security flaw
+- Bcrypt is industry standard for password hashing
+- Slow hashing is a feature, not a bug
+- Always hash on registration, verify on login
+
+---
+
 ## Project Structure
 
 ```
@@ -1821,6 +1893,14 @@ backend-journey/
 │       │   └── config.py
 │       ├── .env.example
 │       └── requirements.txt
+├── day45/              # Password Hashing & Authentication
+│   └── secure_auth/
+│       └── app/
+│           ├── shared/
+│           │   └── security.py
+│           └── modules/
+│               └── users/
+│                   └── router.py
 └── requirements.txt
 
 ```
