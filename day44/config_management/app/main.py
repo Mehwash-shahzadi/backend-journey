@@ -12,7 +12,16 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root():
-        return {"message": "Modular E-Commerce API  Day 43 Complete!"}
+        return {"message": "Pydentic setting Day 44 Complete!"}
+    
+    @app.get("/config")
+    async def show_config():
+       from app.config import settings
+       return {
+            "project": settings.PROJECT_NAME,
+            "debug": settings.DEBUG,
+            "db_connected": True
+              }
 
     return app
 

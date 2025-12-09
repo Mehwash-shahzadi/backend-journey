@@ -1586,6 +1586,98 @@ _Atomic Transactions:_ Multiple operations succeed together or fail together. Cr
 
 [View Complete Documentation](day36-38/ecommerce_api/README.md)
 
+---
+
+## Week 7-8: Modular Architecture & Authentication
+
+### Day 43: Modular Architecture
+
+**What I Built:** Refactored the e-commerce API into a clean modular structure
+
+Reorganized the entire project from a messy folder structure into professional modules. Each feature (users, products, orders) now lives in its own self-contained module.
+
+**New Structure:**
+
+```
+app/
+├── modules/
+│   ├── users/              # User module
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── repository.py
+│   │   ├── service.py
+│   │   └── router.py
+│   ├── products/           # Product module
+│   └── orders/             # Order module
+├── shared/                 # Shared utilities
+│   ├── exceptions.py
+│   ├── utils.py
+│   └── middleware.py
+└── main.py                 # App factory
+```
+
+**What I Learned:**
+
+_Modular Monolith:_ One application but organized into independent modules. Easier than microservices but cleaner than a single file.
+
+_Separation of Concerns:_ Each module has its own models, routes, and logic. Changes to users don't affect products.
+
+_App Factory Pattern:_ `main.py` registers all module routers. Adding new features means creating a new module folder.
+
+**Key Takeaways:**
+
+- Each module is self-contained and independent
+- Shared code goes in `shared/` folder
+- Easy to work on teams - assign one module per person
+- Scales better than single-file architecture
+
+---
+
+### Day 44: Configuration Management
+
+**What I Built:** Centralized all configuration with environment variables
+
+Removed all hardcoded values (database URLs, secrets) and moved them to environment variables using Pydantic Settings.
+
+**Configuration Setup:**
+
+```python
+# config.py
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    SECRET_KEY: str
+    DEBUG: bool = False
+    PROJECT_NAME: str = "E-Commerce API"
+
+    class Config:
+        env_file = ".env"
+```
+
+**Files Created:**
+
+- `.env` - actual secrets (not committed to Git)
+- `.env.example` - template showing required variables
+- `config.py` - centralized settings class
+
+**What I Learned:**
+
+_Environment Variables:_ Configuration that changes between development, testing, and production. Never hardcode secrets.
+
+_Pydantic Settings:_ Automatically loads from `.env` file and validates types. Type-safe configuration.
+
+_12-Factor App:_ Store config in environment, not code. Industry standard for deployment.
+
+**Key Takeaways:**
+
+- Never commit secrets to Git
+- One config file controls entire app
+- Easy to switch between dev/test/prod environments
+- Ready for deployment with different settings
+
+---
+
 ## Project Structure
 
 ```
@@ -1714,13 +1806,28 @@ backend-journey/
 │       ├── alembic/
 │       ├── create_admin.py
 │       └── README.md
+├── day43/              # Modular Architecture Refactor
+│   └── modular_structure/
+│       └── app/
+│           ├── modules/
+│           │   ├── users/
+│           │   ├── products/
+│           │   └── orders/
+│           ├── shared/
+│           └── main.py
+├── day44/              # Configuration Management
+│   └── config_management/
+│       ├── app/
+│       │   └── config.py
+│       ├── .env.example
+│       └── requirements.txt
 └── requirements.txt
 
 ```
 
 ## What's Next
 
-This repo is my public accountability. Week 4 complete. Week 5 in progress - authentication and security coming up. Let's see where this goes.
+This repo is my public accountability. Week 6 complete. Week 7-8 in progress
 
 The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 
