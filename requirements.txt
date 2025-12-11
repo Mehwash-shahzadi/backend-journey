@@ -17,3 +17,5 @@ pydantic-settings
 python-dotenv
 passlib[bcrypt]
 pytest
+python-jose[cryptography]
+python-multipart

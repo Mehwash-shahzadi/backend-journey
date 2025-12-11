@@ -1750,6 +1750,83 @@ _Verification:_ Use `verify_password()` to check login. Never compare passwords 
 
 ---
 
+### Day 46-47: JWT Authentication
+
+**What I Built:** Stateless authentication system using JSON Web Tokens (JWT)
+
+Implemented industry-standard JWT authentication. Users receive a token on login that grants access to protected routes. No server-side session storage needed.
+
+**New Endpoints:**
+
+```
+POST /users/login       Login and receive JWT token
+GET  /users/me          Get current user info (protected)
+```
+
+**Login with JWT:**
+
+```json
+POST /users/login
+{
+  "email": "user@example.com",
+  "password": "secure123"
+}
+
+Response:
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
+
+**Accessing Protected Routes:**
+
+```bash
+GET /users/me
+Headers:
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Response:
+{
+  "id": 1,
+  "email": "user@example.com",
+  "full_name": "John Doe"
+}
+```
+
+**JWT Structure:**
+
+```
+header.payload.signature
+
+Header:    {"alg": "HS256", "typ": "JWT"}
+Payload:   {"sub": "user@example.com", "exp": 1234567890}
+Signature: HMACSHA256(header + payload, SECRET_KEY)
+```
+
+**What I Learned:**
+
+**JWT Benefits:** Stateless authentication - no server session storage needed. Token contains all user info. Server just validates signature.
+
+**Token Structure:** Three parts (header, payload, signature) encoded in Base64. Signature ensures token wasn't tampered with.
+
+**Bearer Authentication:** Standard HTTP authentication scheme. Token sent in Authorization header with "Bearer" prefix.
+
+**Security:** Never store sensitive data in JWT payload - it's Base64 encoded, not encrypted. Always use HTTPS in production.
+
+**Expiration:** Tokens expire after 30 minutes. Forces users to re-authenticate periodically. Prevents indefinite access if token is stolen.
+
+**Key Takeaways:**
+
+- JWT is industry standard for modern APIs
+- Stateless = no session storage = easier to scale
+- Token expiration is critical for security
+- Use strong SECRET_KEY (32+ characters) in production
+- Protected routes validate token before allowing access
+- Invalid/expired tokens return 401 Unauthorized
+
+---
+
 ## Project Structure
 
 ```
@@ -1901,6 +1978,24 @@ backend-journey/
 │           └── modules/
 │               └── users/
 │                   └── router.py
+├── day46-47/           # JWT Authentication (NEW)
+│   └── jwt_auth/
+│       └── app/
+│           ├── shared/
+│           │   ├── security.py        # JWT token utilities
+│           │   ├── exception.py
+│           │   └── utils.py
+│           ├── modules/
+│           │   └── users/
+│           │       ├── models.py
+│           │       ├── schemas.py     # Token schemas
+│           │       ├── repository.py
+│           │       ├── service.py
+│           │       └── router.py      # JWT-protected routes
+│           ├── config.py              # Updated with JWT settings
+│           ├── database.py
+│           ├── dependencies.py        # JWT auth dependency
+│           └── main.py
 └── requirements.txt
 
 ```
