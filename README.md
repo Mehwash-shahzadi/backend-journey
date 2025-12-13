@@ -1978,23 +1978,23 @@ backend-journey/
 │           └── modules/
 │               └── users/
 │                   └── router.py
-├── day46-47/           # JWT Authentication (NEW)
+├── day46-47/           # JWT Authentication
 │   └── jwt_auth/
 │       └── app/
 │           ├── shared/
-│           │   ├── security.py        # JWT token utilities
+│           │   ├── security.py
 │           │   ├── exception.py
 │           │   └── utils.py
 │           ├── modules/
 │           │   └── users/
 │           │       ├── models.py
-│           │       ├── schemas.py     # Token schemas
+│           │       ├── schemas.py
 │           │       ├── repository.py
 │           │       ├── service.py
-│           │       └── router.py      # JWT-protected routes
-│           ├── config.py              # Updated with JWT settings
+│           │       └── router.py
+│           ├── config.py
 │           ├── database.py
-│           ├── dependencies.py        # JWT auth dependency
+│           ├── dependencies.py
 │           └── main.py
 └── requirements.txt
 
