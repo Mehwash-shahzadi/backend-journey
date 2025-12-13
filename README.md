@@ -1996,6 +1996,39 @@ backend-journey/
 │           ├── database.py
 │           ├── dependencies.py
 │           └── main.py
+├── day48/              # OAuth2 Password Flow (NEW)
+│   └── oauth2_flow/
+│       └── app/
+│           ├── shared/
+│           │   ├── security.py
+│           │   ├── exception.py
+│           │   └── utils.py
+│           ├── modules/
+│           │   └── users/
+│           │       ├── models.py
+│           │       ├── schemas.py     #
+│           │       ├── repository.py
+│           │       ├── service.py
+│           │       └── router.py
+│           ├── config.py
+│           ├── database.py
+│           ├── dependencies.py
+│           └── main.py
+day49/rbac/  (Day 49 RBAC)
+├── alembic/
+│   └── versions/
+│       ├── xxxx_initial_migration.py
+│       └── xxxx_add_role_field.py
+├── app/
+│   ├── modules/
+│   │   └── users/
+│   │       ├── models.py
+│   │       ├── schemas.py
+│   │       ├── router.py
+│   │       ├── repository.py
+│   │       └── service.py
+│   ├── dependencies.py
+│   └── ...
 └── requirements.txt
 
 ```
