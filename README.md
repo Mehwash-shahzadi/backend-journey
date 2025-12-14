@@ -1827,6 +1827,130 @@ Signature: HMACSHA256(header + payload, SECRET_KEY)
 
 ---
 
+### Day 48: OAuth2 Password Flow
+
+**What I Built:** OAuth2-compliant authentication (industry standard)
+
+Converted custom JWT auth to follow OAuth2 specification. Makes API compatible with standard tools and enables Swagger UI authorization.
+
+**Key Changes:**
+
+```
+Day 46-47 → Day 48
+/users/login → /users/token (endpoint name)
+JSON body → Form data (input format)
+HTTPBearer → OAuth2PasswordBearer (FastAPI scheme)
+```
+
+**OAuth2 Login Format:**
+
+```
+POST /users/token
+Content-Type: application/x-www-form-urlencoded
+
+username=user@example.com
+password=password123
+grant_type=password
+```
+
+**Response:**
+
+```json
+{
+  "access_token": "eyJhbG...",
+  "token_type": "bearer"
+}
+```
+
+**What I Learned:**
+
+**OAuth2 Standard:** Used by Google, GitHub, Facebook. Following the spec ensures compatibility.
+
+**Form Data:** OAuth2 requires form data, not JSON. The `username` field can be email.
+
+**Swagger UI Integration:** The "Authorize" button in `/docs` now works automatically.
+
+**Grant Types:** "password" grant type means user provides credentials directly (vs authorization code flow).
+
+**Key Takeaways:**
+
+- OAuth2 = standardization, not new functionality
+- Makes API compatible with existing OAuth2 clients
+- Form data is required by OAuth2 spec
+- `grant_type=password` enables direct credential exchange
+
+---
+
+### Day 49: Role-Based Access Control (RBAC)
+
+**What I Built:** User roles with different permission levels
+
+Added role system (admin, user, moderator) to control access to different parts of the application.
+
+**Database Changes:**
+
+```
+Added role column to users table:
+- admin: Full access, can manage all users
+- moderator: Can view stats, limited admin access
+- user: Basic access to own data only
+```
+
+**New Endpoints:**
+
+```
+GET    /users/admin/all-users           Admin only - list all users
+DELETE /users/admin/users/{id}          Admin only - delete user
+PATCH  /users/admin/users/{id}/role     Admin only - change user role
+GET    /users/moderator/stats           Moderator/Admin - view statistics
+```
+
+**Role Protection Example:**
+
+```python
+# Any authenticated user
+@router.get("/me")
+async def get_me(user = Depends(get_current_user)):
+    return user
+
+# Admin only
+@router.get("/admin/all-users")
+async def get_all(admin = Depends(get_current_admin)):
+    return all_users
+
+# Moderator or Admin
+@router.get("/moderator/stats")
+async def stats(user = Depends(require_role(UserRole.MODERATOR, UserRole.ADMIN))):
+    return stats
+```
+
+**Testing RBAC:**
+
+1. Register regular user (default role: user)
+2. Try accessing `/admin/all-users` → 403 Forbidden
+3. Register admin user (role: admin)
+4. Access `/admin/all-users` → Success
+
+**What I Learned:**
+
+**Authorization vs Authentication:** Authentication = "who are you?" (token). Authorization = "what can you do?" (role).
+
+**403 vs 401:** 401 = not logged in. 403 = logged in but insufficient permissions.
+
+**Role Hierarchy:** Admin > Moderator > User. Higher roles can access lower role endpoints.
+
+**Database Migration:** Used Alembic to add role column to existing users table without data loss.
+
+**Key Takeaways:**
+
+- RBAC = fundamental security pattern for any app
+- Roles prevent unauthorized actions even with valid token
+- Always check both authentication (token) AND authorization (role)
+- Use Alembic migrations for schema changes in production
+- Test with different user roles to verify protection
+
+---
+
 ## Project Structure
 
 ```
@@ -2006,7 +2130,7 @@ backend-journey/
 │           ├── modules/
 │           │   └── users/
 │           │       ├── models.py
-│           │       ├── schemas.py     #
+│           │       ├── schemas.py
 │           │       ├── repository.py
 │           │       ├── service.py
 │           │       └── router.py
