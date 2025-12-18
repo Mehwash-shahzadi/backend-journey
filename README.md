@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 4 complete. Week 5 in progress.
+This repo is my public accountability. Week 6 complete. Week 7-8 in progress.
 
 ## Quick Start
 
