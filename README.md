@@ -1951,6 +1951,156 @@ async def stats(user = Depends(require_role(UserRole.MODERATOR, UserRole.ADMIN))
 
 ---
 
+### Day 50: Refresh Tokens
+
+**What I Built:** Dual token system for better user experience and security
+
+Added refresh tokens so users stay logged in longer without compromising security. Access tokens expire in 30 minutes, but refresh tokens last 7 days.
+
+**How It Works:**
+
+```
+Login → Receive 2 tokens:
+  Access Token (30 min)  - Use for API requests
+  Refresh Token (7 days) - Get new access tokens
+
+Access token expired?
+  Send refresh token → Get fresh tokens
+  Old refresh token automatically invalidated
+
+Logout?
+  Revoke refresh token → Must login again
+```
+
+**New Endpoints:**
+
+```
+POST /users/token          Login and get both tokens
+POST /users/token/refresh  Exchange refresh token for new tokens
+POST /users/token/revoke   Logout by revoking refresh token
+```
+
+**What I Learned:**
+
+_Two-Token System:_ Access tokens are short-lived for security. Refresh tokens are long-lived for convenience. Best of both worlds.
+
+_Token Rotation:_ Each refresh gives you new tokens and invalidates the old refresh token. If someone steals your token, it only works once.
+
+_Database Storage:_ Refresh tokens are stored in database and can be revoked. Enables real logout (unlike pure JWT).
+
+**Key Takeaways:**
+
+- Short access tokens limit damage if stolen
+- Long refresh tokens provide good user experience
+- Token rotation prevents replay attacks
+- Database storage enables instant revocation
+
+---
+
+### Day 51-52: Permission System
+
+**What I Built:** Fine-grained permission system for flexible authorization
+
+Replaced simple role checks with a proper permission system. Instead of checking if someone is "admin", we check if they have specific permissions like "create:post" or "delete:user".
+
+**The Problem:**
+
+```python
+# Before - too broad
+if user.role == "admin":
+    # Can do EVERYTHING
+
+if user.role == "moderator":
+    # What exactly can they do?
+```
+
+**The Solution:**
+
+```python
+# After - specific permissions
+Permissions: create:post, edit:post, delete:post, manage:users
+
+Roles have permissions:
+  Admin: All permissions
+  Moderator: Post management + view users
+  User: Create/edit own posts
+
+Check permission in routes:
+@router.post("/posts", dependencies=[Depends(require_permission("create:post"))])
+```
+
+**Database Schema:**
+
+```
+permissions table:
+  - id, name, description
+
+role_permissions table (many-to-many):
+  - role, permission_id
+```
+
+**Permission Categories:**
+
+```
+Posts: create:post, edit:post, delete:post, view:post
+Users: manage:users, view:users, edit:profile
+Admin: manage:permissions, view:analytics
+```
+
+**Permission Management:**
+
+```
+GET  /permissions/                    List all permissions
+POST /permissions/                    Create permission (admin)
+POST /permissions/roles/{role}/permissions/{id}  Assign to role
+GET  /permissions/roles/{role}        View role permissions
+```
+
+**Real Example:**
+
+```
+Regular User:
+ create:post (has permission)
+ edit:post (has permission)
+ delete:user (no permission) → 403 Forbidden
+
+Moderator:
+ delete:post (has permission)
+ view:users (has permission)
+ manage:permissions (no permission) → 403 Forbidden
+
+Admin:
+ Everything (has all permissions)
+
+```
+
+**What I Learned:**
+
+_Permissions vs Roles:_ Permissions are actions ("create:post"), roles are groups of permissions ("moderator"). Check permissions, not roles.
+
+_Scalability:_ Need new feature? Create permission and assign it. No code changes needed.
+
+_Flexibility:_ Give specific users custom access by adjusting their role's permissions.
+
+_Many-to-Many:_ One role has many permissions. One permission belongs to many roles. Join table connects them.
+
+**Key Takeaways:**
+
+- Permission-based authorization is more flexible than role-based
+- Routes clearly declare required permissions
+- Admin can manage permissions without code changes
+- This is how production apps (GitHub, Google, etc.) handle authorization
+
+**Setup Process:**
+
+1. Create permission tables with Alembic
+2. Seed initial permissions
+3. Assign permissions to default roles
+4. Replace role checks with permission checks
+5. Test with different user types
+
+---
+
 ## Project Structure
 
 ```
@@ -2152,7 +2302,8 @@ day49/rbac/  (Day 49 RBAC)
 │   │       ├── repository.py
 │   │       └── service.py
 │   ├── dependencies.py
-│   └── ...
+├── day50/             # Refresh Tokens
+└── day51-52/          # Permission System
 └── requirements.txt
 
 ```
