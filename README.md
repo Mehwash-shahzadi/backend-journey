@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 6 complete. Week 7-8 in progress.
+This repo is my public accountability. Week 7-8 complete. Week 9 in progress.
 
 ## Quick Start
 
@@ -2101,6 +2101,76 @@ _Many-to-Many:_ One role has many permissions. One permission belongs to many ro
 
 ---
 
+### Day 53-56: Modular E-Commerce Application
+
+**What I Built:** Production-ready modular e-commerce backend
+
+Built a complete e-commerce application using everything learned in Weeks 1-8. Organized into independent modules with proper authentication and authorization.
+
+**Module Structure:**
+
+```
+app/modules/
+├── auth/        → JWT tokens, refresh tokens, permissions
+├── users/       → Profile management
+├── products/    → Catalog with reviews and search
+├── orders/      → Checkout with stock validation
+└── admin/       → User management and analytics
+```
+
+**Key Features:**
+
+- JWT authentication with refresh tokens (30 min access, 7 day refresh)
+- Role-based access control (admin vs user)
+- Permission system (granular authorization)
+- Atomic order processing (stock validation with rollback)
+- Admin analytics dashboard
+- Complete CRUD for all resources
+
+**What I Learned:**
+
+_Modular Architecture:_ Each feature lives in its own module. Can work on products without touching orders. Easy to add new modules.
+
+_JWT + Refresh Tokens:_ Short-lived access tokens for security, long-lived refresh tokens for convenience. Token rotation prevents attacks.
+
+_RBAC + Permissions:_ Roles group permissions. Check permissions in routes, not roles. More flexible than hardcoded role checks.
+
+_Production Patterns:_ Config management, error handling, transaction safety, proper project structure.
+
+**Key Takeaways:**
+
+- Modular design enables team collaboration
+- Independent modules are easier to test and maintain
+- Authentication and authorization are separate concerns
+- Real apps need proper architecture from the start
+
+[View Complete Application Documentation](day53-56/modular_ecommerce/README.md)
+
+---
+
+## Week 7-8 Complete
+
+**Built:**
+
+- Modular architecture with 5 independent modules
+- Complete authentication system (JWT, refresh tokens)
+- Role-based access control
+- Permission system
+- Multi-module e-commerce application
+
+**Learned:**
+
+- Professional project structure
+- Configuration management
+- Password security with bcrypt
+- Token-based authentication
+- Authorization patterns
+- Modular application design
+
+This project demonstrates production-ready backend engineering skills and proper software architecture.
+
+---
+
 ## Project Structure
 
 ```
@@ -2229,6 +2299,7 @@ backend-journey/
 │       ├── alembic/
 │       ├── create_admin.py
 │       └── README.md
+├── day39-42/
 ├── day43/              # Modular Architecture Refactor
 │   └── modular_structure/
 │       └── app/
@@ -2304,13 +2375,29 @@ day49/rbac/  (Day 49 RBAC)
 │   ├── dependencies.py
 ├── day50/             # Refresh Tokens
 └── day51-52/          # Permission System
+├── day53-56/           # Modular E-Commerce Application
+│   └── modular_ecommerce/
+│       ├── app/
+│       │   ├── main.py
+│       │   ├── config.py
+│       │   ├── database.py
+│       │   ├── modules/
+│       │   │   ├── auth/
+│       │   │   ├── users/
+│       │   │   ├── products/
+│       │   │   ├── orders/
+│       │   │   └── admin/
+│       │   └── shared/
+│       ├── alembic/
+│       ├── .env.example
+│       └── README.md
 └── requirements.txt
 
 ```
 
 ## What's Next
 
-This repo is my public accountability. Week 6 complete. Week 7-8 in progress
+This repo is my public accountability. Week 7-8 complete. Week 9 in progress
 
 The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 
