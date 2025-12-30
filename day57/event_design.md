@@ -138,24 +138,6 @@ Meanwhile (background):
 
 All happens independently without blocking the user.
 
-## Message Broker Comparison
-
-Choosing the right message broker depends on your needs:
-
-| Broker   | Speed  | Setup   | Persistence | Reliability | Best For                    | My Assessment        |
-| -------- | ------ | ------- | ----------- | ----------- | --------------------------- | -------------------- |
-| Redis    | Fast   | Easy    | Optional    | Good        | Simple pub/sub, caching     | Perfect for starting |
-| RabbitMQ | Medium | Medium  | Yes         | Excellent   | Complex routing, queues     | Good for enterprise  |
-| Kafka    | Fast   | Complex | Yes         | Excellent   | High throughput, event logs | Overkill for now     |
-
-**Why I Chose Redis:**
-
-- Simple setup and configuration
-- Fast enough for my use case
-- Built-in pub/sub support
-- Easy to learn and understand
-- Can add persistence later if needed
-
 ## Immediate vs Background Processing
 
 Not all events need the same urgency. Here's how I classified them:
@@ -182,6 +164,24 @@ Not all events need the same urgency. Here's how I classified them:
 - Can tolerate some delay
 - Improves response times
 - Better resource utilization
+
+## Message Broker Comparison
+
+Choosing the right message broker depends on your needs:
+
+| Broker   | Speed  | Setup   | Persistence | Reliability | Best For                    | My Assessment        |
+| -------- | ------ | ------- | ----------- | ----------- | --------------------------- | -------------------- |
+| Redis    | Fast   | Easy    | Optional    | Good        | Simple pub/sub, caching     | Perfect for starting |
+| RabbitMQ | Medium | Medium  | Yes         | Excellent   | Complex routing, queues     | Good for enterprise  |
+| Kafka    | Fast   | Complex | Yes         | Excellent   | High throughput, event logs | Overkill for now     |
+
+**Why I Chose Redis:**
+
+- Simple setup and configuration
+- Fast enough for my use case
+- Built-in pub/sub support
+- Easy to learn and understand
+- Can add persistence later if needed
 
 ## Why This Fits My Project
 
