@@ -2171,6 +2171,57 @@ This project demonstrates production-ready backend engineering skills and proper
 
 ---
 
+### Day 57: Event-Driven Architecture Planning
+
+**What I Learned:** Designing event-driven systems for asynchronous processing
+
+Planned an event-driven architecture for the e-commerce app. Instead of waiting for emails and stock updates, the API now publishes events and responds instantly.
+
+**The Concept:**
+
+```
+Old Way: Create Order → Send Email → Update Stock → Return (slow)
+New Way: Create Order → Publish Event → Return (fast!)
+         Background: Email + Stock Update happen independently
+```
+
+**Key Events Planned:**
+
+- UserRegistered → Welcome email, Analytics
+- OrderCreated → Stock reduction, Email, Analytics
+- OrderPaid → Shipping notification
+- ProductReviewed → Rating update
+- StockLow → Admin alert
+- UserBanned → Block access
+- PaymentFailed → Notify user
+
+**Two Patterns:**
+
+- **Pub/Sub**: One event, many consumers (OrderCreated → Stock, Email, Analytics)
+- **Queue**: Tasks distributed to workers (Background jobs)
+
+**Message Broker Choice:**
+Chose Redis for simplicity. Fast, easy setup, perfect for learning.
+
+**What I Learned:**
+
+_Event-Driven:_ Systems communicate through events, not direct calls. Makes everything faster and more scalable.
+
+_Asynchronous Processing:_ User gets instant response. Heavy work happens in background.
+
+_Loose Coupling:_ Modules don't depend on each other. Orders module doesn't know about Email service.
+
+**Key Takeaways:**
+
+- Events make systems faster and more scalable
+- Background processing improves user experience
+- Redis is great for starting with events
+- Real apps need async processing for performance
+
+[View Event Architecture Planning](day57/event_design.md)
+
+---
+
 ## Project Structure
 
 ```
@@ -2391,8 +2442,9 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── alembic/
 │       ├── .env.example
 │       └── README.md
+├── day57/              # Event-Driven Architecture Planning
+│       └── event_design.md
 └── requirements.txt
-
 ```
 
 ## What's Next
