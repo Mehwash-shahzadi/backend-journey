@@ -2252,7 +2252,7 @@ Producer → Redis Queue → Workers (one processes at a time)
 
 **Key Differences:**
 
-|          | Pub/Sub        | Queue           |
+| Features | Pub/Sub        | Queue           |
 | -------- | -------------- | --------------- |
 | Delivery | Many listeners | One worker      |
 | Storage  | No             | Yes             |
