@@ -2222,6 +2222,63 @@ _Loose Coupling:_ Modules don't depend on each other. Orders module doesn't know
 
 ---
 
+### Day 58: Redis Fundamentals - Pub/Sub & Queues
+
+**What I Built:** Learned Redis basics with hands-on Pub/Sub and Queue examples
+
+Explored Redis as a message broker using two core patterns: real-time event broadcasting and background job processing.
+
+**Two Patterns Learned:**
+
+**1. Pub/Sub (Real-Time Events):**
+
+```
+Publisher → Redis Channel → Subscribers (all receive instantly)
+```
+
+- Messages broadcast to all listeners
+- No storage (lost if no one listening)
+- Perfect for: Live updates, notifications, broadcasts
+
+**2. Queue (Background Jobs):**
+
+```
+Producer → Redis Queue → Workers (one processes at a time)
+```
+
+- Tasks stored until processed
+- Reliable delivery
+- Perfect for: Emails, order processing, reports
+
+**Key Differences:**
+
+|          | Pub/Sub        | Queue           |
+| -------- | -------------- | --------------- |
+| Delivery | Many listeners | One worker      |
+| Storage  | No             | Yes             |
+| Use Case | Real-time      | Background jobs |
+
+**What I Learned:**
+
+_Redis as Message Broker:_ Fast in-memory data store that different services use to communicate.
+
+_Pub/Sub Pattern:_ Like a radio station. Publishers broadcast, subscribers tune in. Instant but not stored.
+
+_Queue Pattern:_ Like a to-do list. Producers add tasks, workers process them. Reliable and stored.
+
+_Scaling:_ Can run multiple workers to process queue tasks faster.
+
+**Key Takeaways:**
+
+- Redis is foundation for event-driven architecture
+- Choose Pub/Sub for real-time, Queue for reliability
+- Multiple workers can scale queue processing
+- No database needed for message passing
+
+[View Redis Examples](day58/redis_basics/README.md)
+
+---
+
 ## Project Structure
 
 ```
@@ -2444,6 +2501,15 @@ day49/rbac/  (Day 49 RBAC)
 │       └── README.md
 ├── day57/              # Event-Driven Architecture Planning
 │       └── event_design.md
+├── day58/              # Redis Basics
+│   └── redis_basics/
+│       ├── docker-compose.yml
+│       ├── redis_client.py
+│       ├── publisher.py
+│       ├── subscriber.py
+│       ├── queue_producer.py
+│       ├── queue_worker.py
+│       └── README.md
 └── requirements.txt
 ```
 
