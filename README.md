@@ -2349,6 +2349,144 @@ _FIFO Processing:_ First task in, first task out. Redis LPUSH/RPOP maintains ord
 
 ---
 
+### Day 60: Event Publisher with Redis Pub/Sub
+
+**What I Built:** Event publishing system for domain events
+
+Created an event publisher that broadcasts domain events (user registered, order created) to Redis channels. API publishes events and responds instantly without waiting for consumers.
+
+**The Concept:**
+
+```
+Old: API → Process → Email → Log → Response (slow)
+New: API → Publish Event → Response (fast!)
+     Background: Email + Log services subscribe and react
+```
+
+**System Flow:**
+
+```
+User Action → FastAPI → Publish Event to Redis Channel
+              ↓ (instant)              ↓
+         Success Response    Services subscribe & react independently
+```
+
+**What I Built:**
+
+- Event schemas with Pydantic (UserRegisteredEvent, OrderCreatedEvent)
+- Publisher service that adds timestamps automatically
+- FastAPI endpoints that publish events
+
+**Example:**
+
+```python
+# When user registers
+POST /register {"user_id": 42, "email": "user@example.com"}
+
+# Event published to Redis channel:
+{
+  "event_type": "user.registered",
+  "user_id": 42,
+  "email": "user@example.com",
+  "timestamp": "2025-10-15T14:30:22"
+}
+```
+
+**What I Learned:**
+
+_Pub/Sub Pattern:_ Publishers don't know who subscribes. Services communicate through events, not direct calls.
+
+_Event-Driven Architecture:_ Decouples services completely. Can add new event consumers without touching the publisher.
+
+_Structured Events:_ Pydantic models make events type-safe and self-documenting.
+
+**Key Takeaways:**
+
+- Events enable loose coupling between services
+- API responds faster by not waiting for reactions
+- Easy to add new features by subscribing to existing events
+- Foundation for microservices communication
+
+---
+
+### Day 61: Event Subscribers & Handlers
+
+**What I Built:** Event subscriber with handler pattern for processing events
+
+Created a separate process that listens to Redis channels and routes events to appropriate handlers (email sender, analytics logger, etc.).
+
+**The Problem:**
+
+```
+Day 60: Events published → Nothing happens (no one listening)
+Day 61: Events published → Subscriber reacts automatically
+```
+
+**System Flow:**
+
+```
+FastAPI → Publish Event → Redis Channel
+                            ↓
+                    Subscriber Process
+                            ↓
+                    Route to Handler → Action
+```
+
+**What I Built:**
+
+- Abstract EventHandler base class
+- Concrete handlers (SendWelcomeEmailHandler, LogAnalyticsHandler)
+- Subscriber service that routes events to handlers
+- Handler registry pattern (maps event types to handlers)
+
+**Handler Example:**
+
+```python
+class SendWelcomeEmailHandler(EventHandler):
+    async def handle(self, event_data: dict):
+        email = event_data["email"]
+        print(f"Sending welcome email to {email}")
+        # Actual email sending logic here
+
+# Register handler
+subscriber.register_handler("user.registered", SendWelcomeEmailHandler())
+```
+
+**Running:**
+
+```bash
+# Terminal 1: Start subscriber
+python -m events.subscriber_main
+
+# Terminal 2: Start API
+uvicorn main:app --reload
+
+# Terminal 3: Trigger event
+POST /register {"user_id": 42, "email": "user@example.com"}
+
+# Subscriber automatically processes it
+```
+
+**What I Learned:**
+
+_Handler Pattern:_ Clean way to organize different event reactions. Each event type has specific handlers.
+
+_Registry Pattern:_ Dictionary mapping event types to handlers. Easy to add new reactions.
+
+_Decoupled Processing:_ Subscriber runs independently. Can scale separately from API.
+
+_Reactive Systems:_ Events trigger actions automatically. Foundation for notifications, webhooks, analytics.
+
+**Key Takeaways:**
+
+- Pub/Sub + handlers = powerful reactive architecture
+- Easy to add new event reactions without changing publisher
+- Subscriber can be scaled independently
+- Perfect for background jobs, notifications, audit logs
+- Prepares ground for real microservices
+
+---
+
 ## Week 10-11: LLM API Integration
 
 ### Day 64: LLM APIs Setup & Comparison
@@ -2654,7 +2792,21 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── consumer.py        # Worker consumer
 │       ├── tasks.py           # Task definitions
 │       ├── redis_client.py    # Redis helper
-│       └── README.md
+│       └── README.md├── day60/              # Event Publisher (Redis Pub/Sub)
+│   └── event_publisher/
+│       ├── redis_client.py
+│       ├── events/
+│       │   ├── schemas.py
+│       │   └── publisher.py
+│       └── main.py
+├── day61/              # Event Subscribers & Handlers
+│   └── event_subscriber/
+│       ├── events/
+│       │   ├── handlers.py
+│       │   ├── subscriber.py
+│       │   └── subscriber_main.py
+│       └── main.py
+
 ├── day64/              # LLM API Setup
 └── requirements.txt
 ```
