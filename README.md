@@ -2279,6 +2279,144 @@ _Scaling:_ Can run multiple workers to process queue tasks faster.
 
 ---
 
+### Day 59: Task Queue System
+
+**What I Built:** Producer-consumer pattern with Redis for background jobs
+
+Implemented a task queue system where the API adds tasks to Redis, and workers process them asynchronously in the background.
+
+**The Problem:**
+
+```
+Without Queue: API → Send Email (3s) → Response (slow!)
+With Queue: API → Add to Queue (0.05s) → Response (fast!)
+            Worker → Send Email (3s) in background
+```
+
+**System Flow:**
+
+```
+User Request → FastAPI → Redis Queue → Worker(s)
+                ↓ (instant)              ↓ (background)
+           Success Response         Process Task
+```
+
+**What I Built:**
+
+- **Producer**: FastAPI endpoint that adds email tasks to Redis queue
+- **Consumer**: Python worker that processes tasks from queue
+- **Tasks**: Email sending logic (simulated with 3s delay)
+
+**Example Usage:**
+
+```bash
+# Start API
+uvicorn producer:app --reload
+
+# Start workers (can run multiple)
+python consumer.py
+
+# Send task via API
+POST /send-email
+{
+  "recipient_email": "user@example.com",
+  "subject": "Welcome!",
+  "body": "Thanks for signing up"
+}
+
+# Response: Instant! Worker processes in background
+```
+
+**What I Learned:**
+
+_Producer-Consumer Pattern:_ Classic design pattern where producers add work and consumers process it independently.
+
+_Task Queues:_ API doesn't wait for slow operations. Adds tasks to queue and returns immediately.
+
+_Worker Scaling:_ Run multiple workers to process tasks faster. Each picks from the same queue.
+
+_FIFO Processing:_ First task in, first task out. Redis LPUSH/RPOP maintains order.
+
+**Key Takeaways:**
+
+- Never block API responses with slow operations
+- Task queues enable async background processing
+- Multiple workers improve throughput
+- Redis makes a simple but effective queue
+- This pattern is used everywhere in production
+
+[View Task Queue Implementation](day59/task_queue/README.md)
+
+---
+
+## Week 10-11: LLM API Integration
+
+### Day 64: LLM APIs Setup & Comparison
+
+**What I Did:** Explored LLM providers and set up Gemini API
+
+Compared major LLM providers (Gemini, OpenAI, Claude, open-source) and chose Gemini for its generous free tier. Set up API access and tested basic requests.
+
+**Provider Comparison:**
+
+| Provider    | Free Tier | Cost        | Best For               |
+| ----------- | --------- | ----------- | ---------------------- |
+| Gemini      | 60/min    | $0.00025/1K | Production (my choice) |
+| OpenAI      | Limited   | $0.03/1K    | Complex reasoning      |
+| Claude      | No        | $0.015/1K   | Long documents         |
+| Open Source | Unlimited | Free        | Privacy                |
+
+**Why Gemini:**
+
+- Generous free tier (60 requests/minute)
+- Very low cost for production
+- Fast and reliable
+- Good quality responses
+
+**Setup Process:**
+
+1. Created Google AI Studio account
+2. Generated API key
+3. Stored securely in `.env`
+4. Tested with curl and Python
+
+**Example Request:**
+
+```python
+import requests
+
+response = requests.post(
+    f"{GEMINI_URL}?key={API_KEY}",
+    json={
+        "contents": [{
+            "parts": [{"text": "Explain FastAPI"}]
+        }]
+    }
+)
+```
+
+**What I Learned:**
+
+_LLM APIs:_ Cloud-hosted AI models accessed via HTTP. No need to run models locally.
+
+_Tokens:_ Roughly 1 token = 4 characters. Used for billing and limits.
+
+_Rate Limits:_ Free tier has 60 requests/minute. Good for development and small apps.
+
+_Response Structure:_ Nested JSON with candidates, content, and usage metadata.
+
+**Key Takeaways:**
+
+- LLM integration is now standard in modern backends
+- Start with free tiers for learning
+- Always secure API keys in environment variables
+- Understand token costs before production
+- Rate limiting requires retry logic
+
+[View LLM Setup Guide](day64/llm_setup/README.md)
+
+---
+
 ## Project Structure
 
 ```
@@ -2510,6 +2648,14 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── queue_producer.py
 │       ├── queue_worker.py
 │       └── README.md
+├── day59/              # Task Queue System
+│   └── task_queue/
+│       ├── producer.py        # FastAPI producer
+│       ├── consumer.py        # Worker consumer
+│       ├── tasks.py           # Task definitions
+│       ├── redis_client.py    # Redis helper
+│       └── README.md
+├── day64/              # LLM API Setup
 └── requirements.txt
 ```
 
