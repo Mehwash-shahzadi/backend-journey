@@ -19,4 +19,4 @@ passlib[bcrypt]
 pytest
 python-jose[cryptography]
 python-multipart
-redis
+google-genai

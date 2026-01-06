@@ -2555,6 +2555,73 @@ _Response Structure:_ Nested JSON with candidates, content, and usage metadata.
 
 ---
 
+### Day 65: Gemini API Integration with FastAPI
+
+**What I Built:** FastAPI endpoint integrated with Google's Gemini LLM
+
+Created a production-ready AI text generation endpoint using Google's Gemini API. Users can send prompts and get AI-generated responses through a simple REST API.
+
+**What I Built:**
+
+- FastAPI POST endpoint `/ai/generate`
+- Async Gemini service using `google-genai` SDK
+- Pydantic request/response validation
+- Error handling for API limits and failures
+- Environment-based API key management
+
+**Example Usage:**
+
+```bash
+POST http://localhost:8000/ai/generate
+{
+  "prompt": "Write a haiku about FastAPI"
+}
+
+Response:
+{
+  "prompt": "Write a haiku about FastAPI",
+  "generated_text": "Speed and simplicity\nPython's async web framework\nAPIs made easy",
+  "model": "gemini-2.5-flash",
+  "timestamp": "2026-01-15T10:30:00"
+}
+```
+
+**Code Structure:**
+
+```python
+# services/gemini_service.py
+class GeminiService:
+    async def generate_text(self, prompt: str) -> str:
+        response = await client.generate_content(prompt)
+        return response.text
+
+# main.py
+@app.post("/ai/generate")
+async def generate_text(request: GenerateRequest):
+    result = await gemini_service.generate_text(request.prompt)
+    return {"generated_text": result}
+```
+
+**What I Learned:**
+
+_Async LLM Calls:_ Using `async/await` with Gemini prevents blocking other API requests during AI generation.
+
+_Modern SDK:_ `google-genai` is the current official SDK (replaced older `google-generativeai`).
+
+_Error Handling:_ Catch API errors gracefully (rate limits, invalid requests, network issues).
+
+_Model Choice:_ `gemini-2.5-flash` - fast, cost-effective, good quality for most use cases.
+
+**Key Takeaways:**
+
+- LLM integration is now standard in modern backends
+- Async calls essential for API performance
+- Environment variables keep API keys secure
+- Pydantic validation ensures clean requests
+- Foundation for chatbots, content generation, data extraction
+
+---
+
 ## Project Structure
 
 ```
@@ -2806,8 +2873,14 @@ day49/rbac/  (Day 49 RBAC)
 │       │   ├── subscriber.py
 │       │   └── subscriber_main.py
 │       └── main.py
-
 ├── day64/              # LLM API Setup
+├── day65/              # Gemini API Integration
+│   └── gemini_integration/
+│       ├── main.py
+│       ├── services/
+│       │   └── gemini_service.py
+│       ├── .env
+│       └── requirements.txt
 └── requirements.txt
 ```
 
