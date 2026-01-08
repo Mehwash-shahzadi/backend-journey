@@ -2622,6 +2622,107 @@ _Model Choice:_ `gemini-2.5-flash` - fast, cost-effective, good quality for most
 
 ---
 
+### Day 66: Multi-Turn Chat with Conversation History
+
+**What I Built:** Conversational chatbot with memory using Gemini API
+
+Enhanced Day 65's single-prompt system into a real chatbot that remembers the entire conversation. Server maintains chat history automatically.
+
+**The Upgrade:**
+
+```
+Day 65: One prompt → One response (no memory)
+Day 66: Multi-turn chat → AI remembers everything
+```
+
+**What I Built:**
+
+- FastAPI POST endpoint `/ai/chat` with simple message input
+- Server-side conversation history (no manual history management)
+- Concise AI responses (4-5 lines, not essays)
+- Token usage tracking for cost monitoring
+- Robust error handling and clean client lifecycle
+
+**Example Conversation:**
+
+```bash
+# First message
+POST /ai/chat
+{"message": "Hi, I'm learning backend with Python"}
+
+Response:
+{
+  "message": "Great choice! Python is perfect for backend...",
+  "tokens_used": 125
+}
+
+# Second message (AI remembers first message)
+POST /ai/chat
+{"message": "What should I learn after FastAPI?"}
+
+Response:
+{
+  "message": "Since you're learning backend with Python, I'd recommend...",
+  "tokens_used": 158
+}
+```
+
+**How It Works:**
+
+```python
+# Server maintains conversation history
+conversation_history = []
+
+@app.post("/ai/chat")
+async def chat(request: ChatRequest):
+    # Add user message to history
+    conversation_history.append({
+        "role": "user",
+        "parts": [{"text": request.message}]
+    })
+
+    # Send full history to Gemini
+    response = await client.generate_content(conversation_history)
+
+    # Add AI response to history
+    conversation_history.append({
+        "role": "model",
+        "parts": [{"text": response.text}]
+    })
+
+    return {"message": response.text, "tokens_used": response.usage_metadata.total_token_count}
+```
+
+**Key Features:**
+
+**Automatic Memory:** Server tracks all messages. Users just send next message.
+
+**Concise Responses:** System instruction limits replies to 4-5 lines (informative but not verbose).
+
+**Token Tracking:** Returns token count for cost awareness.
+
+**Simple Testing:** No need to copy-paste conversation arrays. Just send messages sequentially.
+
+**What I Learned:**
+
+_Conversation History:_ Real chatbots need context. Each message includes full conversation for AI to reference.
+
+_System Instructions:_ Pre-configured prompts shape AI behavior (tone, length, style).
+
+_Stateless Pattern:_ Each request rebuilds context. Easy to scale later with Redis/database storage.
+
+_Token Management:_ Conversations accumulate tokens. Need limits for production.
+
+**Key Takeaways:**
+
+- Multi-turn chat requires maintaining conversation history
+- Server-side history simplifies client implementation
+- System instructions control AI behavior and response style
+- Token tracking essential for cost management
+- Foundation for production chatbot applications
+
+---
+
 ## Project Structure
 
 ```
@@ -2880,6 +2981,12 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── services/
 │       │   └── gemini_service.py
 │       ├── .env
+│       └── requirements.txt
+├── day66/              # Multi-Turn Chat with History
+│   └── chat_history/
+│       ├── main.py
+│       ├── services/
+│       │   └── gemini_service.py
 │       └── requirements.txt
 └── requirements.txt
 ```
