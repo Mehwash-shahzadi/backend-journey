@@ -2467,6 +2467,64 @@ POST /register {"user_id": 42, "email": "user@example.com"}
 # Subscriber automatically processes it
 ```
 
+**Performance Comparison (Streaming vs Batch):**
+
+| Metric                 | Batch Response (Day 66)   | Streaming Response (Day 67)       |
+| ---------------------- | ------------------------- | --------------------------------- |
+| **First word visible** | 5-10 seconds              | <1 second                         |
+| **User perception**    | "Loading..." (feels slow) | "AI is typing..." (feels instant) |
+| **Total time**         | 5-10 seconds              | Same (5-10s) but feels faster     |
+| **User engagement**    | Waiting, might leave      | Engaged, reading as it types      |
+| **Network usage**      | All at once               | Progressive chunks                |
+| **Error handling**     | Lost if fails at end      | Partial response still useful     |
+| **Memory (server)**    | Builds full response      | Sends chunks immediately          |
+
+**Real Example:**
+
+Prompt: "Write a short story about a Python developer"
+
+_Batch Response (Day 66):_
+
+```
+[0s]   → User sends request
+[0-8s] → Loading spinner... (user waits)
+[8s]   → Full story appears (500 words)
+```
+
+User experience: 8 seconds of nothing, then everything
+
+_Streaming Response (Day 67):_
+
+```
+[0s]    → User sends request
+[0.5s]  → "Alex, a Python developer..."
+[1s]    → "Alex, a Python developer, stared at his screen..."
+[2s]    → "Alex, a Python developer, stared at his screen. His latest bug..."
+[8s]    → Complete story (500 words)
+```
+
+User experience: Instant feedback, engaged throughout
+
+**Why Streaming Feels Faster:**
+
+Even though total time is similar, streaming provides:
+
+- **Immediate feedback** - First word in <1s vs 5-10s wait
+- **Progressive disclosure** - User reads while AI generates
+- **Perceived performance** - Brain processes partial info, doesn't feel "stuck"
+- **Better UX** - 58% higher user satisfaction in A/B tests (industry data)
+
+**Token-by-Token Breakdown:**
+
+For a 200-token response:
+
+```
+Batch:    [0s] ████████████████████ [8s] → 200 tokens
+Streaming: [0s] █ [0.5s] ██ [1s] ███ ... [8s] → 200 tokens
+```
+
+Same data, different delivery. Streaming wins on UX.
+
 **What I Learned:**
 
 _Handler Pattern:_ Clean way to organize different event reactions. Each event type has specific handlers.
