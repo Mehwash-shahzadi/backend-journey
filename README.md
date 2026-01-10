@@ -2723,6 +2723,127 @@ _Token Management:_ Conversations accumulate tokens. Need limits for production.
 
 ---
 
+### Day 67: Real-Time AI Streaming with Server-Sent Events
+
+**What I Built:** Live streaming AI responses with both GET and POST endpoints
+
+No more waiting for complete responses. Words now appear instantly as Gemini generates them, just like ChatGPT. Supports both POST (JSON) and GET (query params) for flexibility.
+
+**The Difference:**
+
+```
+Day 66: Send message → Wait 5s → Full response appears
+Day 67: Send message → Words stream instantly → Better UX
+```
+
+**What I Built:**
+
+- Two streaming endpoints: `GET /ai/stream?text=...` and `POST /ai/stream`
+- Real-time word-by-word response delivery using SSE
+- Server-side conversation history (stored in `app.state`)
+- Works directly from browser, curl, or any HTTP client
+
+**How Streaming Works:**
+
+```python
+async def event_generator():
+    # Stream chunks as Gemini generates them
+    async for chunk in gemini.generate_stream(
+        app.state.chat_history,
+        text
+    ):
+        yield chunk  # Each chunk sent immediately
+
+return StreamingResponse(
+    event_generator(),
+    media_type="text/event-stream",
+    headers={"Cache-Control": "no-cache"}
+)
+```
+
+**Testing - Two Ways:**
+
+**Option 1: GET Request (Easy Browser Test)**
+
+```bash
+# Just paste in browser:
+http://localhost:8000/ai/stream?text=Tell me a joke
+
+# Or with curl:
+curl -N "http://localhost:8000/ai/stream?text=Tell%20me%20a%20joke"
+
+# Response streams in:
+data: Why did the
+data: programmer quit
+data: his job?
+data: Because he didn't
+data: get arrays!
+data: [DONE]
+```
+
+**Option 2: POST Request (JSON)**
+
+```bash
+curl -N -X POST http://localhost:8000/ai/stream \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Explain FastAPI in simple terms"}'
+```
+
+**Browser Direct Test:**
+Simply visit in your browser:
+
+```
+http://localhost:8000/ai/stream?text=What is Python?
+```
+
+Watch the response stream live!
+
+**Key Implementation Details:**
+
+**State Management:**
+
+```python
+# Conversation history stored in app state
+app.state.chat_history: list[dict] = []
+
+# Shared across all streaming requests
+async for chunk in gemini.generate_stream(
+    app.state.chat_history,  # Full conversation context
+    text
+)
+```
+
+**Dual Interface:**
+
+- GET: Easy browser testing with query parameters
+- POST: Clean JSON API for production clients
+
+**Headers:**
+
+```python
+headers={"Cache-Control": "no-cache"}  # Prevent caching of stream
+```
+
+**What I Learned:**
+
+_GET + POST Flexibility:_ GET endpoint allows instant browser testing without tools. POST provides clean API interface.
+
+_SSE Format:_ Each chunk prefixed with `data:`. Browser EventSource automatically handles this.
+
+_App State:_ FastAPI's `app.state` stores conversation history shared across requests.
+
+_No HTML Needed:_ GET endpoint works directly in browser. Perfect for quick testing.
+
+**Key Takeaways:**
+
+- Dual endpoints (GET/POST) maximize flexibility
+- Streaming feels instant vs 5-10s wait time
+- SSE simpler than WebSockets for one-way server→client
+- Browser can test GET endpoints directly (no Postman needed)
+- Production-ready pattern used by ChatGPT, Claude, Gemini
+
+---
+
 ## Project Structure
 
 ```
@@ -2984,6 +3105,12 @@ day49/rbac/  (Day 49 RBAC)
 │       └── requirements.txt
 ├── day66/              # Multi-Turn Chat with History
 │   └── chat_history/
+│       ├── main.py
+│       ├── services/
+│       │   └── gemini_service.py
+│       └── requirements.txt
+├── day67/              # Streaming Responses (SSE)
+│   └── streaming_chat/
 │       ├── main.py
 │       ├── services/
 │       │   └── gemini_service.py
