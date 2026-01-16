@@ -19,16 +19,16 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Gemini Streaming Chat")
 
 app.state.chat_history: list[dict] = [] 
+
 def get_gemini() -> GeminiService:
     return GeminiService(API_KEY)
 
 class Message(BaseModel):
     text: str
+
 @app.get("/ai/stream")
 async def stream_chat_get(
-    text: str = Query(...),  
-    gemini: GeminiService = Depends(get_gemini)
-):
+    text: str = Query(...),gemini: GeminiService = Depends(get_gemini)):
     if not text.strip():
         raise HTTPException(400, "Empty message")
 

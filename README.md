@@ -2902,6 +2902,87 @@ _No HTML Needed:_ GET endpoint works directly in browser. Perfect for quick test
 
 ---
 
+### Day 69-70: AI Chatbot with Persistent Storage
+
+**What I Built:** Production-ready chatbot backend with database persistence
+
+Built a complete ChatGPT-like backend with conversation management, message history, and intelligent context handling - all stored in PostgreSQL.
+
+**Key Features:**
+
+- Multiple conversations per user
+- Full message history in database
+- Auto-generated conversation titles
+- Smart context window (keeps last 20 messages)
+- Streaming and batch responses
+- Token usage tracking
+
+**API Endpoints:**
+
+```bash
+POST /chat/conversations              # Create new chat
+GET  /chat/conversations              # List user's chats
+POST /conversations/{id}/messages     # Send message, get AI response
+GET  /conversations/{id}/messages     # View chat history
+GET  /conversations/{id}/stream       # Stream responses live
+```
+
+**Database Schema:**
+
+```
+conversations: id, user_id, title, created_at, updated_at
+messages: id, conversation_id, role, content, tokens_used, created_at
+```
+
+**Smart Features:**
+
+**Context Window Management:**
+
+```python
+# Keeps last 20 messages for AI context
+# Auto-trims older messages when limit exceeded
+# Prevents token overflow in long conversations
+```
+
+**Auto-Generated Titles:**
+
+```python
+# First message: "What is the best way to learn Python?"
+# Auto title: "What is the best way to learn"
+# Makes conversations easy to find
+```
+
+**Token Tracking:**
+
+```python
+# Each message tracks tokens used
+# Helps monitor costs and usage
+# Estimates: word_count * 2
+```
+
+**What I Learned:**
+
+_Conversation State:_ Real chat apps need database persistence. In-memory state doesn't work for production.
+
+_Context Windows:_ AI models have token limits. Must trim old messages to prevent failures in long conversations.
+
+_Auto-Titles:_ First message creates conversation title automatically. Better UX than manual naming.
+
+_Streaming + Storage:_ Combine real-time streaming with database persistence for best UX and reliability.
+
+**Key Takeaways:**
+
+- Database essential for multi-conversation chat apps
+- Context window management prevents token overflow
+- Auto-titles improve conversation organization
+- Streaming provides instant feedback while saving to database
+- Token tracking critical for cost management
+- Production chatbots need persistent storage
+
+[View Complete Chatbot Backend Documentation](day69-70/chatbot_api/README.md)
+
+---
+
 ## Project Structure
 
 ```
@@ -3173,6 +3254,20 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── services/
 │       │   └── gemini_service.py
 │       └── requirements.txt
+├── day69-70/           # AI Chatbot with Database
+│   └── chatbot_api/
+│       ├── main.py
+│       ├── config.py
+│       ├── database.py
+│       ├── models/
+│       │   ├── conversation.py
+│       │   └── message.py
+│       ├── schemas/
+│       ├── crud/
+│       ├── services/
+│       │   └── gemini_service.py
+│       └── routers/
+│           └── chat.py
 └── requirements.txt
 ```
 
