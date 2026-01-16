@@ -2979,7 +2979,7 @@ _Streaming + Storage:_ Combine real-time streaming with database persistence for
 - Token tracking critical for cost management
 - Production chatbots need persistent storage
 
-[View Complete Chatbot Backend Documentation](day69-70/chatbot_api/README.md)
+[View Complete Chatbot Backend Documentation](day69-70/chatbot_api/README.MD)
 
 ---
 
