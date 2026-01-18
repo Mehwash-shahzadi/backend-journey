@@ -3109,7 +3109,7 @@ Transformed a functional chatbot into a production-ready service by adding compr
 - Security and optimization implemented
 - Production-ready AI service
 
-[View Comprehensive Security & Optimization Guide](day73-74/chatbot_api/docs/ai_guide.md)
+[View Comprehensive Security & Optimization Guide](day73-74/chatbot_api/docs/ai-guide.md)
 
 [View Complete Documentation](day73-74/chatbot_api/README.MD)
 
