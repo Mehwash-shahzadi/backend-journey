@@ -1242,4 +1242,3 @@ Want to take it further? Here are ideas:
 - Model performance tracking
 
 Pick any of these and you'll learn something new!
-[View Comprehensive Security & Optimization Guide](day73-74/chatbot_api/docs/ai-guide.md)
