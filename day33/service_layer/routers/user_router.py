@@ -14,6 +14,7 @@ def create_user(data: UserCreate, db: Session = Depends(get_db)):
         return user
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
 # Deactivate a user
 @router.post("/users/{user_id}/deactivate")
 def deactivate_user(user_id: int, db: Session = Depends(get_db)):

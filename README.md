@@ -6,7 +6,7 @@ I've been dabbling with Python for a while, but never had the structure to becom
 
 **Goal:** Go from writing scripts to building production-grade backend applications. By day 90, I want to confidently apply for backend developer roles.
 
-This repo is my public accountability. Week 7-8 complete. Week 9 in progress.
+This repo is my public accountability. Week 10-11 complete. Moving forward!
 
 ## Quick Start
 
@@ -2983,6 +2983,137 @@ _Streaming + Storage:_ Combine real-time streaming with database persistence for
 
 ---
 
+### Day 71-72: AI-Powered Features with Caching
+
+**What I Built:** Extended the chatbot with AI utilities - summarization, moderation, classification, and text generation
+
+Took the chatbot from Days 69-70 and supercharged it with practical AI tools. Instead of just chatting, the API can now process, understand, and generate content at scale. Added Redis caching to make everything lightning-fast.
+
+**Four Powerful Endpoints:**
+
+**Day 71:**
+
+1. **Text Summarization** (`POST /ai/summarize`)
+   - Reduces any text to ~100 characters while keeping the important stuff
+   - Perfect for: articles, emails, user input, notifications
+   - Cache: 1 hour
+
+2. **Content Moderation** (`POST /ai/moderate`)
+   - Detects toxic, offensive, or harmful content
+   - Returns toxicity score (0.0-1.0) + specific issues found
+   - Perfect for: user comments, user-generated content, safety
+   - Cache: 30 minutes
+
+**Day 72:**
+
+**Four Endpoints:**
+
+1. **Summarization** (`POST /ai/summarize`) - Reduce text to ~100 characters
+2. **Moderation** (`POST /ai/moderate`) - Detect toxic content with toxicity score
+3. **Classification** (`POST /ai/classify`) - Categorize content and detect sentiment
+4. **Generation** (`POST /ai/generate`) - Create emails, blogs, product descriptions
+
+**Cache Performance:**
+
+- First request: 1-2 seconds (calls Gemini)
+- Repeated request: 10ms (from Redis)
+- **100x faster** on cache hits!
+
+**Cache TTLs:**
+
+- Summarize: 1 hour
+- Moderate: 30 minutes
+- Classify: 30 minutes
+- Generate: 1 hour
+
+**Example:**
+
+```bash
+# Summarize
+curl -X POST "http://localhost:8000/ai/summarize" \
+  -d '{"text": "Long article..."}'
+
+# Classify
+curl -X POST "http://localhost:8000/ai/classify" \
+  -d '{"text": "Tech news..."}'
+```
+
+**What I Learned:**
+
+- Prompt engineering needs iteration (used "CRITICAL" keywords)
+- Post-processing required to enforce constraints (100-char limit)
+- SHA256 cache keys for uniqueness
+- Async Redis keeps FastAPI responsive
+- Different endpoints need different cache durations
+
+**Key Takeaways:**
+
+- AI endpoints are slow (1-2 sec) → caching is essential
+- Redis makes production APIs fast and scalable
+- Prompt + post-processing = reliable AI behavior
+- Docker Compose with PostgreSQL + Redis ready for deployment
+
+[View Complete AI Features Documentation](day71-72/README.MD)
+
+---
+
+### Day 73-74: Security Hardening & Optimization
+
+**What I Built:** Added production-grade security layer and cost optimization to the chatbot API
+
+Transformed a functional chatbot into a production-ready service by adding comprehensive security protections and cost-saving optimizations.
+
+**Day 73 - Security Features:**
+
+1. **Prompt Injection Detection** - Blocks 18 jailbreak patterns (ignore instructions, system:, act as, etc.)
+2. **PII Redaction** - Auto-hides emails, phone numbers, credit cards, SSNs, API keys
+3. **Safety Validation** - Blocks harmful content (hate speech, illegal instructions, violence)
+4. **Rate Limiting** - 10 requests/minute per IP to prevent spam attacks
+
+**Day 74 - Optimization Features:**
+
+1. **Prompt Optimizer** - Shortened prompts by 25-35%, reducing token costs by 30%
+2. **Error Handling Middleware** - User-friendly error messages + request IDs for debugging
+3. **API Documentation** - 700+ line comprehensive guide for developers
+
+**Key Improvements:**
+
+- Security: 4 layers of protection (injection detection, PII filtering, safety checks, rate limiting)
+- Costs: Monthly savings of $30-300 depending on request volume
+- Reliability: Production-grade error handling with request tracking
+- Performance: <2% overhead added by security features
+
+**What I Learned:**
+
+- Prompt injection attacks are real and need detection
+- PII redaction prevents accidental data leaks
+- Token optimization doesn't sacrifice quality
+- Middleware pattern adds functionality across all routes
+- Request IDs transform debugging from hours to minutes
+
+**Key Takeaways:**
+
+- Security must be built in, not added later
+- Cost optimization is part of production engineering
+- User-friendly errors improve user experience and support
+- Comprehensive docs separate professional from amateur projects
+- Testing security features is as important as testing functionality
+
+**Weekly Deliverables Checklist (Week 10-11):**
+
+- Gemini API integrated
+- Streaming responses working
+- Rate limiting and cost tracking
+- Complete chatbot backend
+- Multiple AI-powered features
+- Security and optimization implemented
+- Production-ready AI service
+
+[View Comprehensive Security & Optimization Guide](day73-74/chatbot_api/DAY_73-74_GUIDE.md)
+[View Complete Documentation](day73-74/README.MD)
+
+---
+
 ## Project Structure
 
 ```
@@ -3268,12 +3399,53 @@ day49/rbac/  (Day 49 RBAC)
 │       │   └── gemini_service.py
 │       └── routers/
 │           └── chat.py
+├── day71-72/           # AI-Powered Features with Caching
+│   └── chatbot_api/
+│       ├── main.py
+│       ├── config.py
+│       ├── database.py
+│       ├── models/
+│       ├── schemas/
+│       ├── crud/
+│       ├── services/
+│       │   ├── gemini_service.py
+│       │   └── ai_utils.py
+│       ├── routers/
+│       │   ├── chat.py
+│       │   └── ai_features.py
+│       └── docker-compose.yml
+├── day73-74/           # Security Hardening & Optimization
+│   └── chatbot_api/
+│       ├── main.py
+│       ├── config.py
+│       ├── database.py
+│       ├── models/
+│       ├── schemas/
+│       ├── crud/
+│       ├── services/
+│       │   ├── gemini_service.py
+│       │   └── ai_utils.py
+│       ├── security/
+│       │   └── prompt_safety.py
+│       ├── prompts/
+│       │   └── utils/
+│       │       └── prompt_optimizer.py
+│       ├── middleware/
+│       │   └── error_handler.py
+│       ├── docs/
+│       │   └── ai-guide.md
+│       ├── routers/
+│       │   ├── chat.py
+│       │   └── ai_features.py
+│       ├── DAY_73-74_GUIDE.md
+│       ├── START_HERE.md
+│       └── docker-compose.yml
 └── requirements.txt
 ```
 
 ## What's Next
 
-This repo is my public accountability. Week 7-8 complete. Week 9 in progress
+This repo is my public accountability. Week 10-11 complete. Moving forward!
 
 The roadmap ahead: CI/CD pipelines, cloud deployment (AWS/GCP), Redis caching, and building a complete production-ready application.
 

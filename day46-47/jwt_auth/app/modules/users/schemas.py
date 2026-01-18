@@ -11,6 +11,7 @@ class UserOut(BaseModel):
     full_name: str | None
 
     class Config:
+        '''it change the model response from dict to orm object'''
         from_attributes = True
 
 class Token(BaseModel):
