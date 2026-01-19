@@ -3115,6 +3115,68 @@ Transformed a functional chatbot into a production-ready service by adding compr
 
 ---
 
+### Day 75: Docker Containerization Basics
+
+**What I Built:** Containerized a FastAPI application with Docker for reproducible deployments
+
+Learned how to package Python applications into Docker containers - ensuring the same environment runs everywhere (dev, staging, production).
+
+**Key Concepts:**
+
+1. **Dockerfile** - Recipe to build container images
+   - Multi-stage builds for smaller images
+   - `.dockerignore` to exclude unnecessary files
+   - Proper layer ordering for caching
+
+2. **Container Basics:**
+   - Images are templates
+   - Containers are running instances
+   - Isolates dependencies and OS concerns
+
+3. **FastAPI in Docker:**
+
+   ```dockerfile
+   FROM python:3.11-slim
+   WORKDIR /app
+   COPY requirements.txt .
+   RUN pip install --no-cache-dir -r requirements.txt
+   COPY . .
+   CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+   ```
+
+4. **Running Containers:**
+   ```bash
+   docker build -t my-fastapi-app .
+   docker run -p 8000:8000 my-fastapi-app
+   ```
+
+**What I Learned:**
+
+- Containers ensure "it works on my machine" never happens again
+- Docker Compose orchestrates multiple services (coming next)
+- Image size matters - use slim versions, cache pip installs
+- `.dockerignore` prevents bloated images with `__pycache__` and `.git`
+- Port mapping connects container ports to host machine
+
+**Key Takeaways:**
+
+- Docker solves environment consistency across machines
+- Containerization is essential for production deployments
+- Smaller images = faster builds and deployments
+- Layer caching optimization improves build performance
+- Containers are the foundation for CI/CD pipelines
+
+**Quick Test:**
+
+```bash
+cd day75/docker_basics
+docker build -t my-fastapi-app .
+docker run -p 8000:8000 my-fastapi-app
+# Visit: http://localhost:8000
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -3441,6 +3503,12 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── DAY_73-74_GUIDE.md
 │       ├── START_HERE.md
 │       └── docker-compose.yml
+├── day75/              # Docker Containerization Basics
+│   └── docker_basics/
+│       ├── Dockerfile
+│       ├── .dockerignore
+│       ├── main.py
+│       └── requirements.txt
 └── requirements.txt
 ```
 
