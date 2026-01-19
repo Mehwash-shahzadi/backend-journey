@@ -3500,8 +3500,6 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── routers/
 │       │   ├── chat.py
 │       │   └── ai_features.py
-│       ├── DAY_73-74_GUIDE.md
-│       ├── START_HERE.md
 │       └── docker-compose.yml
 ├── day75/              # Docker Containerization Basics
 │   └── docker_basics/
