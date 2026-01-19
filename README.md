@@ -3115,6 +3115,8 @@ Transformed a functional chatbot into a production-ready service by adding compr
 
 ---
 
+## Week 12-13: Deployment & Production Capstone
+
 ### Day 75: Docker Containerization Basics
 
 **What I Built:** Containerized a FastAPI application with Docker for reproducible deployments
