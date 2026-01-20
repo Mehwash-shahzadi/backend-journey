@@ -3179,6 +3179,110 @@ docker run -p 8000:8000 my-fastapi-app
 
 ---
 
+### Day 76: Docker Compose Multi-Container Stack
+
+**What I Built:** Orchestrated FastAPI, PostgreSQL, and Redis into a complete multi-container application using Docker Compose
+
+Learned how to run multiple services together seamlessly - one command starts the entire stack with networking, volumes, and health checks.
+
+**Three Services Working Together:**
+
+1. **FastAPI App** (port 8000) - Main application with environment-aware configuration
+2. **PostgreSQL** (persistent) - Database with automatic data persistence via volumes
+3. **Redis** (port 6379) - Caching layer for fast in-memory operations
+
+**Key Concepts:**
+
+1. **docker-compose.yml** - Single file that orchestrates all services
+   - Service definitions with images and builds
+   - Port mappings and environment variables
+   - Shared networks for inter-service communication
+   - Volume mounting for persistent storage
+
+2. **Environment Variables** - Configuration per environment
+
+   ```yaml
+   environment:
+     - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+     - REDIS_URL=redis://redis:6379
+   ```
+
+3. **Service Dependencies** - Ensures services start in correct order
+
+   ```yaml
+   depends_on:
+     - db
+     - redis
+   ```
+
+4. **Persistent Volumes** - Data survives container restarts
+
+   ```yaml
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+   ```
+
+5. **Health Checks** - Monitor service readiness
+   ```yaml
+   healthcheck:
+     test: ["CMD-SHELL", "pg_isready -U user"]
+     interval: 10s
+   ```
+
+**API Endpoints:**
+
+```bash
+# Full health check (all services)
+curl http://localhost:8000/health
+
+# Individual service checks
+curl http://localhost:8000/health/db
+curl http://localhost:8000/health/redis
+
+# Cache operations
+curl -X POST "http://localhost:8000/cache/set?key=mykey&value=myvalue"
+curl "http://localhost:8000/cache/get?key=mykey"
+```
+
+**What I Learned:**
+
+- Services communicate via container names as DNS (automatic in networks)
+- Volumes persist data even when containers are destroyed
+- Environment variables enable configuration without code changes
+- Health checks automate service readiness monitoring
+- One `docker-compose up` replaces multiple manual docker commands
+- Container networks isolate communication from host machine
+
+**Key Takeaways:**
+
+- Docker Compose eliminates "works on my machine" for entire stacks
+- Persistent volumes are essential for stateful services (databases)
+- Health checks transform manual testing into automated monitoring
+- Environment variables separate configuration from code
+- Service dependencies prevent race conditions on startup
+- Networking magic: containers find each other by service name
+
+**Quick Test:**
+
+```bash
+cd day76/docker_compose
+docker-compose up -d
+
+# Check all services running
+docker-compose ps
+
+# Test full stack
+curl http://localhost:8000/health
+
+# View logs
+docker-compose logs -f
+
+# Stop all
+docker-compose down
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -3509,6 +3613,15 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── .dockerignore
 │       ├── main.py
 │       └── requirements.txt
+├── day76/              # Docker Compose Multi-Container Stack
+│   └── docker_compose/
+│       ├── docker-compose.yml
+│       ├── Dockerfile
+│       ├── .dockerignore
+│       ├── .env.example
+│       ├── main.py
+│       ├── requirements.txt
+│       └── README.md
 └── requirements.txt
 ```
 
