@@ -3430,7 +3430,7 @@ cd day77/deployment_config
 
 # Local development setup
 cp .env.development .env
-python -c "from config import get_settings; s = get_settings(); print(f'✅ Config loaded: {s.ENVIRONMENT}')"
+python -c "from config import get_settings; s = get_settings(); print(f' Config loaded: {s.ENVIRONMENT}')"
 
 # Check validation error
 echo "ENVIRONMENT=invalid" >> .env
