@@ -15,22 +15,22 @@ class Settings(BaseSettings):
     Validates all values before allowing app to start.
     """
 
-    # ==================== Database ====================
+    #  Database 
     DATABASE_URL: str = Field(..., description="PostgreSQL connection string")
     
-    # ==================== Redis ====================
+    #  Redis 
     REDIS_URL: str = Field(..., description="Redis connection string")
     
-    # ==================== API Keys ====================
+    #  API Keys
     GEMINI_API_KEY: str = Field(..., description="Google Gemini API key")
     OPENAI_API_KEY: str | None = Field(None, description="OpenAI API key (optional)")
     
-    # ==================== Security ====================
+    #  Security 
     SECRET_KEY: str = Field(..., description="Secret key for JWT tokens")
     ALGORITHM: str = Field("HS256", description="JWT algorithm")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(30, ge=1, le=1440, description="Token expiry in minutes")
     
-    # ==================== Application ====================
+    #  Application 
     DEBUG: bool = Field(False, description="Debug mode (never True in production)")
     ENVIRONMENT: str = Field("production", description="Environment: development, staging, production")
     APP_NAME: str = Field("FastAPI Backend", description="Application name")
