@@ -3283,6 +3283,170 @@ docker-compose down
 
 ---
 
+### Day 77: Environment Configuration & Secrets Management
+
+**What I Built:** Production-ready configuration system with strict validation that prevents secrets from leaking and ensures safe deployment across development, staging, and production environments.
+
+**Key Features:**
+
+1. **Pydantic-Settings Configuration** - Loads from `.env` files with type validation
+2. **Field Validators** - Custom validation for DATABASE_URL, REDIS_URL, SECRET_KEY, ENVIRONMENT
+3. **Environment-Specific Templates** - `.env.example`, `.env.development`, `.env.production`
+4. **Strict Settings** - `extra="forbid"` rejects unknown variables, catching typos
+5. **Fail-Fast Pattern** - Configuration errors caught at startup, never at request time
+6. **Secrets Management Guides** - Local/Docker/AWS/GCP/Azure/Heroku strategies
+
+**Configuration File (`config.py`):**
+
+```python
+from pydantic_settings import BaseSettings
+from pydantic import field_validator
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    REDIS_URL: str
+    SECRET_KEY: str
+    ENVIRONMENT: str  # development, staging, production
+    DEBUG: bool = False
+
+    @field_validator('SECRET_KEY')
+    @classmethod
+    def validate_secret_key(cls, v):
+        if len(v) < 32:
+            raise ValueError('SECRET_KEY must be 32+ characters')
+        if v in ['secret', 'changeme', '123456']:
+            raise ValueError('SECRET_KEY is a placeholder, set a real one')
+        return v
+
+    @field_validator('ENVIRONMENT')
+    @classmethod
+    def validate_environment(cls, v):
+        allowed = ['development', 'staging', 'production']
+        if v not in allowed:
+            raise ValueError(f'ENVIRONMENT must be one of {allowed}')
+        return v
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
+        extra = "forbid"  # Reject unknown variables
+
+def get_settings() -> Settings:
+    return Settings()
+```
+
+**Using in FastAPI:**
+
+```python
+from fastapi import FastAPI, Depends
+from config import Settings, get_settings
+
+app = FastAPI()
+
+@app.get("/config/info")
+async def config_info(settings: Settings = Depends(get_settings)):
+    # Only expose non-sensitive info
+    return {
+        "environment": settings.ENVIRONMENT,
+        "debug": settings.DEBUG,
+        "app": "production" if settings.ENVIRONMENT == "production" else "dev"
+    }
+
+@app.on_event("startup")
+async def log_startup(settings: Settings = Depends(get_settings)):
+    # Log safely - never log SECRET_KEY or API_KEYS
+    print(f"App starting in {settings.ENVIRONMENT} mode")
+```
+
+**Environment Files:**
+
+`.env.example` (safe to commit):
+
+```bash
+# Database - PostgreSQL connection URL
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+
+# Redis - Cache and background jobs
+REDIS_URL=redis://localhost:6379/0
+
+# Security - Generate with: openssl rand -hex 32
+SECRET_KEY=your-32-character-hex-key-here
+
+# Runtime - development, staging, or production
+ENVIRONMENT=development
+
+# Logging - Show detailed logs in development
+DEBUG=true
+
+# API Keys - For external services
+GEMINI_API_KEY=your-gemini-key-here
+```
+
+`.env.development` (local machine only, not committed):
+
+```bash
+DATABASE_URL=postgresql://dev:devpass@localhost:5432/dev_db
+REDIS_URL=redis://localhost:6379/0
+SECRET_KEY=dev-key-dev-key-dev-key-dev-key-dev-key-123456789
+ENVIRONMENT=development
+DEBUG=true
+GEMINI_API_KEY=dev_gemini_test_key_only_local_use
+```
+
+`.env.production` (template, actual secrets in Secrets Manager):
+
+```bash
+# Leave empty, use cloud Secrets Manager instead
+DATABASE_URL=
+REDIS_URL=
+SECRET_KEY=
+GEMINI_API_KEY=
+
+ENVIRONMENT=production
+DEBUG=false
+```
+
+**What I Learned:**
+
+- Strict validation (extra="forbid") catches environment variable typos early
+- Different `.env` files per environment prevent "oops, I deployed dev secrets"
+- Validators on startup mean configuration errors happen immediately, not in production
+- Secrets should never touch code or git history (use cloud Secrets Manager)
+- Fail-fast pattern: validate config at startup, not request time
+
+**Key Takeaways:**
+
+- Configuration is infrastructure, not code - treat it with security care
+- Environment variables enable 12-factor app pattern (same code, different config)
+- Secrets Manager (AWS/GCP) is non-negotiable for production
+- `.gitignore` the `.env` files to prevent accidental commits
+- Deployment checklist transforms from "hope nothing breaks" to verified safety
+- Comprehensive validation prevents "works locally, fails in production"
+
+**Quick Test:**
+
+```bash
+cd day77/deployment_config
+
+# Local development setup
+cp .env.development .env
+python -c "from config import get_settings; s = get_settings(); print(f'✅ Config loaded: {s.ENVIRONMENT}')"
+
+# Check validation error
+echo "ENVIRONMENT=invalid" >> .env
+python -c "from config import get_settings; s = get_settings()" # Shows error
+
+# Verify secrets not exposed
+python -c "from config import get_settings; s = get_settings(); print('SECRET_KEY' in str(s))"
+```
+
+**See Also:**
+
+- `SECRETS_MANAGEMENT.md` - Strategies for local/Docker/AWS/GCP/Azure
+- `DEPLOYMENT_CHECKLIST.md` - 90+ validation checkboxes before going live
+
+---
+
 ## Project Structure
 
 ```
@@ -3622,6 +3786,18 @@ day49/rbac/  (Day 49 RBAC)
 │       ├── main.py
 │       ├── requirements.txt
 │       └── README.md
+├── day77/              # Environment Configuration & Secrets Management
+│   └── deployment_config/
+│       ├── config.py
+│       ├── .env.example
+│       ├── .env.development
+│       ├── .env.production
+│       ├── .gitignore
+│       ├── requirements.txt
+│       ├── main.py
+│       ├── README.md
+│       ├── SECRETS_MANAGEMENT.md
+│       └── DEPLOYMENT_CHECKLIST.md
 └── requirements.txt
 ```
 
