@@ -74,7 +74,7 @@ class Settings(BaseSettings):
 
     @field_validator("REDIS_URL")
     @classmethod
-    def validate_redis_url(cls, v: str) -> str:
+    def validate_redis_url(cls, v: str) -> str: # v point to the value of REDIS_URL
         """Validate Redis connection string format."""
         if not v:
             raise ValueError("REDIS_URL is required")

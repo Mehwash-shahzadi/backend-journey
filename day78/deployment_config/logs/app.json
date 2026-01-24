@@ -1,0 +1,49 @@
+{"timestamp": null, "level": null, "name": "__main__", "message": "Starting server with uvicorn"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Started server process [3448]", "color_message": "Started server process [\u001b[36m%d\u001b[0m]"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Waiting for application startup."}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Application startup", "version": "1.0.0"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Application startup complete."}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)", "color_message": "Uvicorn running on \u001b[1m%s://%s:%d\u001b[0m (Press CTRL+C to quit)"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Shutting down"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Waiting for application shutdown."}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Application shutdown"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Application shutdown complete."}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Finished server process [3448]", "color_message": "Finished server process [\u001b[36m%d\u001b[0m]"}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Starting server with uvicorn"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Started server process [19628]", "color_message": "Started server process [\u001b[36m%d\u001b[0m]"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Waiting for application startup."}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Application startup", "version": "1.0.0"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Application startup complete."}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)", "color_message": "Uvicorn running on \u001b[1m%s://%s:%d\u001b[0m (Press CTRL+C to quit)"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/docs", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/docs", "status": 200, "duration_ms": 18.57}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61707 - \"GET /docs HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/openapi.json", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/openapi.json", "status": 200, "duration_ms": 68.96}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61707 - \"GET /openapi.json HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Root endpoint called"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/", "status": 200, "duration_ms": 78.93}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61718 - \"GET / HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/favicon.ico", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/favicon.ico", "status": 404, "duration_ms": 8.0}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61718 - \"GET /favicon.ico HTTP/1.1\" 404"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/docs", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/docs", "status": 200, "duration_ms": 0.0}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61728 - \"GET /docs HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/openapi.json", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/openapi.json", "status": 200, "duration_ms": 0.0}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61728 - \"GET /openapi.json HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/health", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Health check called"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/health", "status": 200, "duration_ms": 30.53}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61737 - \"GET /health HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Request received", "method": "GET", "path": "/logs/status", "query": "", "client": "127.0.0.1"}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Logs status check"}
+{"timestamp": null, "level": null, "name": "middleware.logging_middleware", "message": "Response sent", "method": "GET", "path": "/logs/status", "status": 200, "duration_ms": 18.7}
+{"timestamp": null, "level": null, "name": "uvicorn.access", "message": "127.0.0.1:61746 - \"GET /logs/status HTTP/1.1\" 200"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Shutting down"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Waiting for application shutdown."}
+{"timestamp": null, "level": null, "name": "__main__", "message": "Application shutdown"}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Application shutdown complete."}
+{"timestamp": null, "level": null, "name": "uvicorn.error", "message": "Finished server process [19628]", "color_message": "Finished server process [\u001b[36m%d\u001b[0m]"}
